@@ -1,0 +1,29 @@
+{
+  "name": "shrihari",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "src/app.ts",
+  "scripts": {
+    "server": "tsx watch ./src/server.ts",
+    "watch-tailwind": "npx tailwindcss -i ./src/styles/input.css -o ./public/css/style.css --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.8",
+    "@tailwindcss/postcss": "^4.1.8",
+    "express": "^5.1.0",
+    "hbs": "^4.2.0",
+    "pug": "^3.0.3",
+    "tailwindcss": "^4.1.8"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.2",
+    "@types/node": "^22.15.29",
+    "tsc": "^2.0.4",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
+  }
+}

@@ -1,0 +1,24 @@
+{{!-- views/layout.hbs --}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/css/style.css">
+  <title>{{title}}</title>
+</head>
+<body>
+  <header class="flex">
+    <nav class="">
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+    </nav>
+  </header>
+
+  {{{body}}}  {{!-- This is where the content of each page (index.hbs, etc.) will be injected --}}
+
+  <footer>
+    <p>© 2025 Vedant Kale</p>
+  </footer>
+</body>
+</html>
