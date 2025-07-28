@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "@types/express": "^5.0.2",
+    "@types/hbs": "^4.0.5",
     "@types/node": "^22.15.29",
     "tsc": "^2.0.4",
     "tsx": "^4.19.4",
