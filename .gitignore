@@ -8,3 +8,5 @@ Thumbs.db
 .env.*
 dist/
 .vscode/
+todo.md
+data/
