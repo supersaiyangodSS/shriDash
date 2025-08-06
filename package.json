@@ -7,7 +7,9 @@
   "scripts": {
     "server": "tsx watch ./src/server.ts",
     "watch:tailwind": "npx tailwindcss -i ./src/styles/input.css -o ./public/css/style.css --watch",
-    "reload": "tsx ./livereload-server.js"
+    "reload": "tsx ./livereload-server.js",
+    "nodemon": "npx nodemon --watch views --ext hbs,ts,js --exec \"tsx watch ./src/server.ts\"",
+    "main": "concurrently \"npm run watch:tailwind\" \"npm run reload\" \"npm run nodemon\""
   },
   "keywords": [],
   "author": "",
@@ -15,6 +17,8 @@
   "dependencies": {
     "@tailwindcss/cli": "^4.1.8",
     "@tailwindcss/postcss": "^4.1.8",
+    "chokidar": "^4.0.3",
+    "concurrently": "^9.2.0",
     "express": "^5.1.0",
     "hbs": "^4.2.0",
     "tailwindcss": "^4.1.8"

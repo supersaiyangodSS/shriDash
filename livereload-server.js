@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const server = livereload.createServer({
-  exts: ['hbs', 'js', 'css'],
+  exts: ['hbs', 'js', 'css', 'ts'],
   delay: 100
 });
 
