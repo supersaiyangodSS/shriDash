@@ -1,4 +1,5 @@
-import { InferSchemaType, Schema, model } from "mongoose";
+import mongoose, { InferSchemaType, Schema, model } from "mongoose";
+import bcrypt from 'bcrypt';
 
 const userSchema = new Schema({
     firstName: {
@@ -20,24 +21,22 @@ const userSchema = new Schema({
     },
     password: {
          type: String,
-         required: true
+         required: true,
+         select: false
     },
     role: {
          type: String,
          enum: ['admin', 'moderator', 'user'],
-         required: true
     },
     verified: {
          type: Boolean,
-         required: true
     },
     token: {
          type: String,
-         required: true
+         select: false
     },
     isTokenUsed: {
          type: Boolean,
-         required: true
     },
     createdAt: {
          type: Date,
@@ -48,6 +47,13 @@ const userSchema = new Schema({
          default: Date.now
     },
 });
+
+userSchema.pre("save", async function () {
+     if (!this.isModified('password')) return;
+
+     const salt = await bcrypt.genSalt(10);
+     this.password = await bcrypt.hash(this.password, salt);
+})
 
 export type User = InferSchemaType<typeof userSchema>;
 

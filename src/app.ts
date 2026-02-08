@@ -1,7 +1,6 @@
 import express from 'express';
 import { errorHandler } from './middleware/errorHandler.middleare';
 import dns from 'node:dns';
-import { User } from './models/user.model';
 import apiRouter from './config/router.config';
 
 dns.setServers(['8.8.8.8', '8.8.4.4']);
