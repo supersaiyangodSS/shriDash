@@ -14,6 +14,7 @@ export const getUsers = async (req: Request, res: Response) => {
   }
 };
 
+// POST /api/users
 export const createUser = async (
   req: Request,
   res: Response,
@@ -50,19 +51,13 @@ export const createUser = async (
     logger.info(`User created: ${savedUser._id}`);
 
     const rawToken = crypto.randomBytes(32).toString("hex");
-
-    const hashedToken = crypto
-      .createHash("sha256")
-      .update(rawToken)
-      .digest("hex");
+    const hashedToken = crypto.createHash("sha256").update(rawToken).digest("hex");
     savedUser.token = hashedToken;
     savedUser.isTokenUsed = false;
 
     await savedUser.save();
-
     const userResponse = savedUser.toObject();
     const { password: _, token: __, ...safeUser } = userResponse;
-
 
     return res.status(201).json({
       message: "User created successfully",
