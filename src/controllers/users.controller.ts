@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import { User } from "../models/user.model";
 import { logger } from "../utils/logger";
 import crypto from "crypto";
+import mongoose from "mongoose";
+import bcrypt from 'bcrypt';
 
 // GET /api/users
 export const getUsers = async (req: Request, res: Response) => {
@@ -68,3 +70,77 @@ export const createUser = async (
     next(error);
   }
 };
+
+// PUT /api/users/:id
+export const editUser = async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    console.log(req.params.id)
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, message: "Invalid user id" });
+    }
+
+    const updateData: any = { ...req.body }
+
+    if (updateData.username) {
+      const existingUsername = await User.findOne({
+        username: updateData.username,
+        _id: { $ne: id }
+      });
+
+      if (existingUsername) {
+        return res.status(409).json({ success: false, message: "Username already exists" })
+      }
+    }
+
+    if (updateData.email) {
+      const existingEmail = await User.findOne({
+        email: updateData.email,
+        _id: { $ne: id }
+      })
+
+      if (existingEmail) {
+        return res.status(409).json({
+          success: false,
+          message: "Email already exists"
+        })
+      }
+    }
+
+    if (updateData.password) {
+      const user = await User.findById(id).select('+password');
+      if (!user) {
+        return res.status(404).json({ success: false, message: 'User not found!' })
+      }
+      const isSamePassword = await bcrypt.compare(updateData.password, user.password)
+
+      if (!isSamePassword) {
+        const salt = await bcrypt.genSalt(10);
+        updateData.password = await bcrypt.hash(updateData.password, salt);
+      }
+      else {
+        delete updateData.password
+      }
+    }
+
+    updateData.updatedAt = new Date();
+
+    const updatedUser = await User.findByIdAndUpdate(
+      id, updateData,
+      {
+        new: true,
+        runValidators: true
+      }
+    ).select("-password -token");
+
+    if (!updatedUser) {
+      return res.status(404).json({ success: false, message: "User not found!" });
+    }
+
+    res.status(200).json({ success: true, message: "User updated successfully", data: updatedUser })
+  } catch (error) {
+    logger.error(`Error updating user: ${error}`);
+    next(error);
+  }
+}
