@@ -75,7 +75,6 @@ export const createUser = async (
 export const editUser = async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
-    console.log(req.params.id)
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ success: false, message: "Invalid user id" });
@@ -141,6 +140,32 @@ export const editUser = async (req: Request<{ id: string }>, res: Response, next
     res.status(200).json({ success: true, message: "User updated successfully", data: updatedUser })
   } catch (error) {
     logger.error(`Error updating user: ${error}`);
+    next(error);
+  }
+}
+
+
+// DELETE /api/user/:id
+export const deleteUser = async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).json({ success: false, message: 'Invalid user id format' });
+    }
+
+    const DeletedUser = await User.findByIdAndDelete(id);
+
+    if(!DeletedUser) {
+      return res.status(404).json({ success: false, message: "User not found" })
+    }
+
+    logger.info(`User deleted successfully: ${id}`);
+
+    return res.status(200).json({ success: true, message: "User deleted successfully" })
+
+  } catch (error) {
+    logger.error(`Error deleting user: ${error}`);
     next(error);
   }
 }
