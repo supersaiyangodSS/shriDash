@@ -46,6 +46,14 @@ const userSchema = new Schema({
          type: Date,
          default: Date.now
     },
+    deleted: {
+          type: Boolean,
+          default: false
+    },
+    deletedAt: {
+          type: Date,
+          default: null
+    }
 });
 
 userSchema.pre("save", async function () {
