@@ -12,11 +12,15 @@ const userSchema = new Schema({
     },
     email: {
          type: String,
+         unique: true,
+         lowercase: true,
+         trim: true,
          required: true
     },
     username: {
          type: String,
          unique: true,
+         trim: true,
          required: true
     },
     password: {
@@ -26,10 +30,12 @@ const userSchema = new Schema({
     },
     role: {
          type: String,
-         enum: ['admin', 'moderator', 'user'],
+         enum: ['admin', 'superadmin', 'user'],
+         default: 'user'
     },
     verified: {
          type: Boolean,
+         default: false
     },
     token: {
          type: String,
@@ -37,14 +43,7 @@ const userSchema = new Schema({
     },
     isTokenUsed: {
          type: Boolean,
-    },
-    createdAt: {
-         type: Date,
-         default: Date.now
-    },
-    updatedAt: {
-         type: Date,
-         default: Date.now
+         default: false
     },
     deleted: {
           type: Boolean,
@@ -54,6 +53,8 @@ const userSchema = new Schema({
           type: Date,
           default: null
     }
+}, {
+     timestamps: true
 });
 
 userSchema.pre("save", async function () {
