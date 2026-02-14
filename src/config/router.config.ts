@@ -4,7 +4,7 @@ import authRouter from '../modules/auth/auth.route';
 
 const router = Router();
 
-router.use('/users', userRouter)
+router.use('/user', userRouter)
 router.use('/auth', authRouter)
 
 export default router;
