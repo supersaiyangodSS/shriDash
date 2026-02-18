@@ -1,5 +1,4 @@
 import { HTTP_CODES } from "../../constants/httpCodes";
-import { logger } from "../../utils/logger";
 import { User } from "./user.model";
 
 export const createUser = async (data: any) => {
