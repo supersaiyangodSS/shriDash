@@ -18,4 +18,8 @@ export const updateUserSchema = z.object({
     password: z.string().min(8).optional()
 });
 
+export const UserIdSchema = z.object({
+    id: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid user id")
+});
+
 export type updateUserInput = z.infer<typeof updateUserSchema>
