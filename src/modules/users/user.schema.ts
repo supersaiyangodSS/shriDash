@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const createUserSchema = z.object({
+export const CreateUserSchema = z.object({
     firstName: z.string().min(1, 'First name is required'),
     lastName: z.string().min(1, 'Last name is required'),
     email: z.string().email('invalid email'),
@@ -8,9 +8,9 @@ export const createUserSchema = z.object({
     password: z.string().min(6, 'password must be at least 8 characters'),
 })
 
-export type CreateUserInput = z.infer<typeof createUserSchema>;
+export type CreateUserInput = z.infer<typeof CreateUserSchema>;
 
-export const updateUserSchema = z.object({
+export const UpdateUserSchema = z.object({
     firstName: z.string().min(2).optional(),
     lastName: z.string().min(2).optional(),
     email: z.string().email().optional(),
@@ -22,4 +22,4 @@ export const UserIdSchema = z.object({
     id: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid user id")
 });
 
-export type updateUserInput = z.infer<typeof updateUserSchema>
+export type UpdateUserInput = z.infer<typeof UpdateUserSchema>
