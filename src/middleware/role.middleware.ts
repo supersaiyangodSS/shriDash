@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { HTTP_CODES } from "../constants/httpCodes";
 
 export const allowRoles =
   (...roles: string[]) =>
@@ -6,11 +7,11 @@ export const allowRoles =
     const user = (req as any).user;
 
     if (!user) {
-      return res.status(401).json({ success: false, message: "Unauthorized" });
+      return res.status(HTTP_CODES.UNAUTHORIZED).json({ success: false, message: "Unauthorized" });
     }
 
     if (!roles.includes(user.role)) {
-      return res.status(403).json({ success: false, message: "Forbidden" });
+      return res.status(HTTP_CODES.FORBIDDEN).json({ success: false, message: "Forbidden" });
     }
 
     next();

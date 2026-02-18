@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { ZodSchema } from "zod";
+import { HTTP_CODES } from "../constants/httpCodes";
 
 export const validate = (schema: ZodSchema, source: "body" | "params" | "query" = "body") => {
     return (req: Request, res: Response, next: NextFunction) => {
@@ -12,7 +13,7 @@ export const validate = (schema: ZodSchema, source: "body" | "params" | "query" 
                 acc[issue.path[0]] = issue.message;
                 return acc;
             }, {} as Record<string, string>)
-            return res.status(400).json({ message: "Validation failed", errors: formatted})
+            return res.status(HTTP_CODES.BAD_REQUEST).json({ message: "Validation failed", errors: formatted})
         }
     }
 }
