@@ -1,7 +1,7 @@
 import { Router } from "express";
-import * as controller from './user.controller';
+import * as controller from './users.controller';
 import { validate } from "../../middleware/validate.middleware";
-import { CreateUserSchema, UpdateUserSchema, UserIdSchema } from "./user.schema";
+import { CreateUserSchema, UpdateUserSchema, UserIdSchema } from "./users.schema";
 import { authMiddleware } from "../../middleware/auth.middleware";
 import { allowRoles } from "../../middleware/role.middleware";
 import { ROLES } from "../../constants/roles";

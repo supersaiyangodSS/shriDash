@@ -1,5 +1,5 @@
 import { HTTP_CODES } from "../../constants/httpCodes";
-import { User } from "./user.model";
+import { User } from "./users.model";
 
 export const createUser = async (data: any) => {
   const existing = await User.findOne({

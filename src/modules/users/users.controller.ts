@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import * as userService from "./user.service";
+import * as userService from "./users.service";
 import mongoose from "mongoose";
 import { HTTP_CODES } from "../../constants/httpCodes";
 

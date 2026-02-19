@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { User } from "../users/user.model";
+import { User } from "../users/users.model";
 import { generateToken } from "./auth.service";
 import { HTTP_CODES } from "../../constants/httpCodes";
 
