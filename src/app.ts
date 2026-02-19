@@ -1,5 +1,5 @@
 import express from 'express';
-import { errorHandler } from './middleware/errorHandler.middleare';
+import { errorHandler } from './middleware/errorHandler.middleware';
 import dns from 'node:dns';
 import apiRouter from './config/router.config';
 import { apiLimiter } from './config/limiter.config';
