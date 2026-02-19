@@ -59,10 +59,22 @@ export const forceDeleteUser = async (req: Request, res: Response) => {
         if (!mongoose.Types.ObjectId.isValid(userId)) {
             return res.status(HTTP_CODES.BAD_REQUEST).json({ success: false, message: "Invalid user id" });
         }
-        const user = await userService.forceDeleteUser(userId);
+        await userService.forceDeleteUser(userId);
         res.status(HTTP_CODES.OK).json({ success: true, message: 'User deleted' })
     } catch (error) {
         return res.status(HTTP_CODES.INTERNAL_SERVER_ERROR).json({ success: true, message: 'Internal server error' });
     }
 }
 
+export const restoreDeletedUser = async (req: Request, res: Response) => {
+        try {
+            const userId = req.params.id as string;
+            if (!mongoose.Types.ObjectId.isValid(userId)) {
+                return res.status(HTTP_CODES.BAD_REQUEST).json({ success: false, message: "Invalid user id" });
+            }
+            await userService.restoreDeletedUser(userId);
+            res.status(HTTP_CODES.OK).json({ success: true, message: 'User restored' });
+        } catch (error) {
+            res.status(HTTP_CODES.INTERNAL_SERVER_ERROR).json({ success: false, message: 'Internal server error' });
+        }
+}

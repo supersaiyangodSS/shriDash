@@ -12,5 +12,6 @@ router.post('/', validate(CreateUserSchema), controller.createUser);
 router.get('/', controller.getUsers);
 router.delete('/:id', validate(UserIdSchema, "params"), controller.softDeleteUser)
 router.delete('/:id/force', controller.forceDeleteUser);
+router.patch('/:id/restore', controller.restoreDeletedUser);
 
 export default router;

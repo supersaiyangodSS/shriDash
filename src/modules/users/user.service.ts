@@ -63,3 +63,18 @@ export const forceDeleteUser = (id: string) => {
   }
   return user;
 };
+
+export const restoreDeletedUser = (id: string) => {
+  const user = User.findByIdAndUpdate(id, {
+    deleted: false,
+    deletedAt: null
+  }, { new: true });
+
+  if (!user) {
+    const err: any = new Error('User not found');
+    err.statusCode = HTTP_CODES.BAD_REQUEST;
+    throw err;
+  }
+
+  return user;
+}
