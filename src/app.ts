@@ -1,8 +1,8 @@
 import express from 'express';
 import { errorHandler } from './middleware/errorHandler.middleware';
 import dns from 'node:dns';
-import apiRouter from './config/router.config';
-import { apiLimiter } from './config/limiter.config';
+import apiRouter from '@/router/router.config';
+import { apiLimiter } from '@/config';
 
 dns.setServers(['8.8.8.8', '8.8.4.4']);
 
