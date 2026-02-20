@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { User } from "../users/users.model";
-import { generateToken } from "./auth.service";
-import { HTTP_CODES } from "../../constants/httpCodes";
+import { User } from "@/modules/users/users.model";
+import { generateToken } from "@/modules/auth/auth.service";
+import { HTTP_CODES } from "@/constants/httpCodes";
 
 export const login = async (req: Request, res: Response) => {
     const { email } = req.body;

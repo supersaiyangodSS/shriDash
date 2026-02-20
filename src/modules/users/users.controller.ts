@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import * as userService from "./users.service";
+import * as userService from "@/modules/users/users.service";
 import mongoose from "mongoose";
-import { HTTP_CODES } from "../../constants/httpCodes";
+import { HTTP_CODES } from "@/constants/httpCodes";
+import { successResponse } from "@/utils/response";
 
 export const createUser = async (
     req: Request,

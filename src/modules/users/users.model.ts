@@ -1,6 +1,6 @@
 import { InferSchemaType, Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
-import { ROLES } from "../../constants/roles";
+import { ROLES } from "@/constants/roles";
 
 const userSchema = new Schema(
   {

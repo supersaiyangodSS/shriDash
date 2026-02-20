@@ -1,10 +1,10 @@
 import { Router } from "express";
-import * as controller from './users.controller';
-import { validate } from "../../middleware/validate.middleware";
-import { CreateUserValidator, UpdateUserValidator, UserIdValidator } from "./users.validator";
+import * as controller from '@/modules/users/users.controller';
+import { validate } from "@/middleware/validate.middleware";
+import { CreateUserValidator, UpdateUserValidator, UserIdValidator } from "@/modules/users/users.validator";
 import { authMiddleware } from "@/middleware/auth.middleware";
-import { allowRoles } from "../../middleware/role.middleware";
-import { ROLES } from "../../constants/roles";
+import { allowRoles } from "@/middleware/role.middleware";
+import { ROLES } from "@/constants/roles";
 
 const router = Router();
 

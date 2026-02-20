@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from 'jsonwebtoken';
-import { env } from "../config/env.config";
-import { HTTP_CODES } from "../constants/httpCodes";
+import { env } from "@/config/env.config";
+import { HTTP_CODES } from "@/constants/httpCodes";
 
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
     try {

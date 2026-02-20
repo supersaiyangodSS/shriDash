@@ -1,7 +1,7 @@
-import { AppError } from "../../errors/AppError";
-import { HTTP_CODES } from "../../constants/httpCodes";
-import { User } from "./users.model";
-import { CreatUserDTO } from "./dto/createUser.dto";
+import { AppError } from "@/errors/AppError";
+import { HTTP_CODES } from "@/constants/httpCodes";
+import { User } from "@/modules/users/users.model";
+import { CreatUserDTO } from "@/modules/users/dto/createUser.dto";
 
 
 export const createUser = async (data: CreatUserDTO) => {

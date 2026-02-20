@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { ZodSchema } from "zod";
-import { HTTP_CODES } from "../constants/httpCodes";
+import { HTTP_CODES } from "@/constants/httpCodes";
 
 export const validate = (schema: ZodSchema, source: "body" | "params" | "query" = "body") => {
     return (req: Request, res: Response, next: NextFunction) => {

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import { logger } from "../utils/logger";
-import { HTTP_CODES } from "../constants/httpCodes";
-import { AppError } from "../errors/AppError";
+import { logger } from "@/utils/logger";
+import { HTTP_CODES } from "@/constants/httpCodes";
+import { AppError } from "@/errors/AppError";
 
 export const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
     // logger.info('Error Handler Middleware')
