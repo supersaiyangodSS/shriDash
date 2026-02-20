@@ -1,8 +1,7 @@
 import { Response } from "express"
 
 // FIXME: data:any
-// FIXME: add errorResponse
 
-export const successResponse = (res: Response, data: any) => {
-    return res.json({ success: true, data })
+export const successResponse = (res: Response, statusCode: number, message: string, data: any) => {
+    return res.status(statusCode).json({ success: true, message, data })
 }
