@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import { HTTP_CODES } from "@/constants/httpCodes";
 import { successResponse } from "@/utils/response";
 
-export const createUser = async (
+export const createUserController = async (
     req: Request,
     res: Response,
     next: NextFunction,
@@ -18,7 +18,7 @@ export const createUser = async (
     }
 };
 
-export const getUsers = async (
+export const getUsersController = async (
     req: Request,
     res: Response,
     next: NextFunction,
@@ -35,7 +35,7 @@ export const getUsers = async (
     }
 };
 
-export const softDeleteUser = async (
+export const softDeleteUserController = async (
     req: Request,
     res: Response,
     next: NextFunction,
@@ -54,7 +54,7 @@ export const softDeleteUser = async (
     }
 };
 
-export const forceDeleteUser = async (req: Request, res: Response) => {
+export const forceDeleteUserController = async (req: Request, res: Response) => {
     try {
         const userId = req.params.id as string;
         if (!mongoose.Types.ObjectId.isValid(userId)) {
@@ -67,7 +67,7 @@ export const forceDeleteUser = async (req: Request, res: Response) => {
     }
 }
 
-export const restoreDeletedUser = async (req: Request, res: Response) => {
+export const restoreDeletedUserController = async (req: Request, res: Response) => {
         try {
             const userId = req.params.id as string;
             if (!mongoose.Types.ObjectId.isValid(userId)) {

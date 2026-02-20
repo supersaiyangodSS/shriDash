@@ -1,6 +1,6 @@
 import { AppError } from "@/errors/AppError";
 import { HTTP_CODES } from "@/constants/httpCodes";
-import { User } from "@/modules/users/users.model";
+import { User } from "@/modules/users";
 import { CreatUserDTO } from "@/modules/users/dto/createUser.dto";
 
 
