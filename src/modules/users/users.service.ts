@@ -1,27 +1,25 @@
+import { AppError } from "../../errors/AppError";
 import { HTTP_CODES } from "../../constants/httpCodes";
 import { User } from "./users.model";
+import { CreatUserDTO } from "./dto/createUser.dto";
 
-export const createUser = async (data: any) => {
+
+export const createUser = async (data: CreatUserDTO) => {
   const existing = await User.findOne({
     $or: [{ email: data.email }, { username: data.username }],
   }).lean();
 
   if (existing) {
     if (existing.email === data.email) {
-      const err: any = new Error("Email already exists");
-      err.statusCode = HTTP_CODES.CONFLICT;
-      throw err;
+      throw new AppError("Email already exists", HTTP_CODES.CONFLICT);
     }
 
     if (existing.username === data.username ) {
-      const err: any = new Error("Username already exists");
-      err.statusCode = HTTP_CODES.CONFLICT;
-      throw err;
+      throw new AppError("Username already exists", HTTP_CODES.CONFLICT);
     }
   }
 
   const user = await User.create(data);
-  console.log(data);
   return user.toObject();
 };
 
@@ -47,33 +45,27 @@ export const softDeleteUser = async (id: string) => {
   );
 
   if (!user) {
-    const err: any = new Error("User not found");
-    err.statusCode = HTTP_CODES.BAD_REQUEST;
-    throw err;
+    throw new AppError("User not found", HTTP_CODES.BAD_REQUEST);
   }
   return user;
 };
 
-export const forceDeleteUser = (id: string) => {
-  const user = User.findByIdAndDelete(id);
+export const forceDeleteUser = async (id: string) => {
+  const user = await User.findByIdAndDelete(id);
   if (!user) {
-    const err: any = new Error("User not found");
-    err.statusCode = HTTP_CODES.BAD_REQUEST;
-    throw err;
+    throw new AppError("User not found", HTTP_CODES.BAD_REQUEST);
   }
   return user;
 };
 
-export const restoreDeletedUser = (id: string) => {
-  const user = User.findByIdAndUpdate(id, {
+export const restoreDeletedUser = async (id: string) => {
+  const user = await User.findByIdAndUpdate(id, {
     deleted: false,
     deletedAt: null
   }, { new: true });
 
   if (!user) {
-    const err: any = new Error('User not found');
-    err.statusCode = HTTP_CODES.BAD_REQUEST;
-    throw err;
+    throw new AppError("User not found", HTTP_CODES.BAD_REQUEST);
   }
 
   return user;
