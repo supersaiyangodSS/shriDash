@@ -3,6 +3,8 @@ import * as userService from "@/modules/users/users.service";
 import mongoose from "mongoose";
 import { HTTP_CODES } from "@/constants/httpCodes";
 import { successResponse } from "@/utils/response";
+import { AppError } from "@/errors/AppError";
+import { logger } from "@/utils/logger";
 
 export const createUserController = async (
     req: Request,
@@ -12,7 +14,7 @@ export const createUserController = async (
     try {
         const payload = req.body;
         const user = await userService.createUser(payload);
-        res.status(HTTP_CODES.CREATED).json({ success: true, data: user });
+        successResponse(res, HTTP_CODES.OK, 'User created', user);
     } catch (error) {
         next(error);
     }
@@ -28,10 +30,9 @@ export const getUsersController = async (
         const limit = Number(req.query.limit) || 10;
 
         const result = await userService.getUsers(page, limit);
-
-        return res.status(HTTP_CODES.OK).json({ success: true, ...result });
+        successResponse(res, HTTP_CODES.OK, 'User fetched:', result)
     } catch (error: any) {
-        return res.status(HTTP_CODES.INTERNAL_SERVER_ERROR).json({ success: false, message: error.message });
+        next(error);
     }
 };
 
@@ -43,39 +44,37 @@ export const softDeleteUserController = async (
     try {
         const userId = req.params.id as string;
         if (!mongoose.Types.ObjectId.isValid(userId)) {
-            return res
-                .status(HTTP_CODES.BAD_REQUEST)
-                .json({ success: false, message: "Invalid user id" });
+            throw new AppError('Invalid user id', HTTP_CODES.BAD_REQUEST);
         }
         await userService.softDeleteUser(userId);
-        res.status(HTTP_CODES.OK).json({ success: true, message: "User deleted" });
+        successResponse(res, HTTP_CODES.OK, 'User deleted')
     } catch (error: any) {
-        return res.status(HTTP_CODES.INTERNAL_SERVER_ERROR).json({ success: false, message: error.message });
+        next(error);
     }
 };
 
-export const forceDeleteUserController = async (req: Request, res: Response) => {
+export const forceDeleteUserController = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = req.params.id as string;
         if (!mongoose.Types.ObjectId.isValid(userId)) {
-            return res.status(HTTP_CODES.BAD_REQUEST).json({ success: false, message: "Invalid user id" });
+            throw new AppError('Invalid user id', HTTP_CODES.BAD_REQUEST);
         }
         await userService.forceDeleteUser(userId);
-        res.status(HTTP_CODES.OK).json({ success: true, message: 'User deleted' })
+        successResponse(res, HTTP_CODES.OK, 'User deleted')
     } catch (error) {
-        return res.status(HTTP_CODES.INTERNAL_SERVER_ERROR).json({ success: true, message: 'Internal server error' });
+        next(error);
     }
 }
 
-export const restoreDeletedUserController = async (req: Request, res: Response) => {
+export const restoreDeletedUserController = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const userId = req.params.id as string;
             if (!mongoose.Types.ObjectId.isValid(userId)) {
-                return res.status(HTTP_CODES.BAD_REQUEST).json({ success: false, message: "Invalid user id" });
+            throw new AppError('Invalid user id', HTTP_CODES.BAD_REQUEST);
             }
-            await userService.restoreDeletedUser(userId);
-            res.status(HTTP_CODES.OK).json({ success: true, message: 'User restored' });
+            const user = await userService.restoreDeletedUser(userId);
+        successResponse(res, HTTP_CODES.OK, 'User restored', user);
         } catch (error) {
-            res.status(HTTP_CODES.INTERNAL_SERVER_ERROR).json({ success: false, message: 'Internal server error' });
+            next(error);
         }
 }
