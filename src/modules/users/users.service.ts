@@ -1,49 +1,33 @@
 import { AppError } from "@/errors/AppError";
 import { HTTP_CODES } from "@/constants/httpCodes";
-import { User } from "@/modules/users/users.model";
 import { CreatUserDTO } from "@/modules/users/dto/createUser.dto";
-
+import * as userRepository from "@/modules/users/users.repository";
 
 export const createUser = async (data: CreatUserDTO) => {
-  const existing = await User.findOne({
-    $or: [{ email: data.email }, { username: data.username }],
-  }).lean();
-
-  if (existing) {
-    if (existing.email === data.email) {
-      throw new AppError("Email already exists", HTTP_CODES.CONFLICT);
-    }
-
-    if (existing.username === data.username ) {
-      throw new AppError("Username already exists", HTTP_CODES.CONFLICT);
-    }
+  const existing = await userRepository.findByEmailorUsernameRepo(
+    data.email,
+    data.username,
+  );
+  if (!existing) {
+    return userRepository.createUserRepo(data);
   }
-
-  const user = await User.create(data);
-  return user.toObject();
+  if (existing.email === data.email) {
+    throw new AppError("Email already exists", HTTP_CODES.CONFLICT);
+  }
+  throw new AppError("Username already exists", HTTP_CODES.CONFLICT);
 };
 
 export const getUsers = async (page: number, limit: number) => {
   const skip = (page - 1) * limit;
-
-  const users = await User.find({}).skip(skip).limit(limit).lean();
-
-  const total = await User.countDocuments();
+  const users = await userRepository.getUsersRepo(limit, skip);
+  const total = await userRepository.countUsersRepo();
   const pages = Math.ceil(total / limit);
 
   return { users, total, page, pages };
 };
 
 export const softDeleteUser = async (id: string) => {
-  const user = await User.findByIdAndUpdate(
-    id,
-    {
-      deleted: true,
-      deletedAt: new Date(),
-    },
-    { new: true },
-  );
-
+  const user = await userRepository.softDeleteUserRepo(id);
   if (!user) {
     throw new AppError("User not found", HTTP_CODES.BAD_REQUEST);
   }
@@ -51,7 +35,7 @@ export const softDeleteUser = async (id: string) => {
 };
 
 export const forceDeleteUser = async (id: string) => {
-  const user = await User.findByIdAndDelete(id);
+  const user = await userRepository.forceDeleteUserRepo(id);
   if (!user) {
     throw new AppError("User not found", HTTP_CODES.BAD_REQUEST);
   }
@@ -59,14 +43,9 @@ export const forceDeleteUser = async (id: string) => {
 };
 
 export const restoreDeletedUser = async (id: string) => {
-  const user = await User.findByIdAndUpdate(id, {
-    deleted: false,
-    deletedAt: null
-  }, { new: true });
-
+  const user = await userRepository.restoreDeleteUserRepo(id);
   if (!user) {
     throw new AppError("User not found", HTTP_CODES.BAD_REQUEST);
   }
-
   return user;
-}
+};
