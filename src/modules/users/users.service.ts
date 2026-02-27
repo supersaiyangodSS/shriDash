@@ -29,7 +29,7 @@ export const getUsers = async (page: number, limit: number) => {
 export const softDeleteUser = async (id: string) => {
   const user = await userRepository.softDeleteUserRepo(id);
   if (!user) {
-    throw new AppError("User not found", HTTP_CODES.BAD_REQUEST);
+    throw new AppError("User not found", HTTP_CODES.NOT_FOUND);
   }
   return user;
 };
@@ -37,7 +37,7 @@ export const softDeleteUser = async (id: string) => {
 export const forceDeleteUser = async (id: string) => {
   const user = await userRepository.forceDeleteUserRepo(id);
   if (!user) {
-    throw new AppError("User not found", HTTP_CODES.BAD_REQUEST);
+    throw new AppError("User not found", HTTP_CODES.NOT_FOUND);
   }
   return user;
 };
@@ -45,7 +45,7 @@ export const forceDeleteUser = async (id: string) => {
 export const restoreDeletedUser = async (id: string) => {
   const user = await userRepository.restoreDeleteUserRepo(id);
   if (!user) {
-    throw new AppError("User not found", HTTP_CODES.BAD_REQUEST);
+    throw new AppError("User not found", HTTP_CODES.NOT_FOUND);
   }
   return user;
 };
