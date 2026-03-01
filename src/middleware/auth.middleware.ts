@@ -3,17 +3,20 @@ import jwt from 'jsonwebtoken';
 import { env } from "@/config/env.config";
 import { HTTP_CODES } from "@/constants/httpCodes";
 import { AppError } from "@/errors/AppError";
+import { logger } from "@/utils/logger";
 
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
     try {
+        const cookieToken = req.cookies?.token;
         const header = req.get("authorization");
+        const headerToken = header?.startsWith('Bearer ') ? header.split(" ")[1] : null;
 
-        if (!header || !header.startsWith("Bearer ")) {
-            throw new AppError('Token missing', HTTP_CODES.UNAUTHORIZED)
+        const token = cookieToken || headerToken;
+        logger.warn({ agent: req.headers["user-agent"], token }, 'this is auth middleware');
+        if (!token) {
+            throw new AppError('Token missing', HTTP_CODES.UNAUTHORIZED);
         }
-        const token = header.split(" ")[1];
         const decoded = jwt.verify(token, env.JWT_SECRET);
-
         (req as any).user = decoded;
         next();
     } catch (error) {
