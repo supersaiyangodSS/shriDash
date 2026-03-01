@@ -1,22 +1,21 @@
 import { NextFunction, Request, Response } from "express";
-import { User } from "@/modules/users/users.model";
-import { generateTokenService } from "@/modules/auth";
+import { loginService } from "@/modules/auth";
 import { HTTP_CODES } from "@/constants/httpCodes";
-import { AppError } from "@/errors/AppError";
+import { successResponse } from "@/utils/response";
+import { logger } from "@/utils/logger";
 
 export const loginController = async (req: Request, res: Response, next: NextFunction) => {
-
     try {
-        const { email } = req.body;
+        const token = await loginService(req.body);
 
-        const user = await User.findOne({ email });
-        if (!user) {
-            throw new AppError('Invalid credentials', HTTP_CODES.UNAUTHORIZED);
-        }
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production", // todo: fix this
+            sameSite: "strict",
+            maxAge: 24 * 60 * 60 * 1000,
+        })
 
-        const token = generateTokenService({ id: user._id, role: user.role });
-
-        res.json({ token });
+        successResponse(res, HTTP_CODES.OK, 'token', token);
     } catch (error) {
         next(error)
     }
