@@ -1,5 +1,3 @@
-import { logger } from '@/utils/logger'
-
 export class AppError extends Error {
     statusCode: number;
 
