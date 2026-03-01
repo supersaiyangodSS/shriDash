@@ -9,9 +9,10 @@ import { ROLES } from "@/constants/roles";
 const router = Router();
 
 router.post('/', validate(CreateUserValidator), controller.createUserController);
-router.get('/', controller.getUsersController);
-router.delete('/:id', validate(UserIdValidator, "params"), controller.softDeleteUserController)
-router.delete('/:id/force', controller.forceDeleteUserController);
-router.patch('/:id/restore', controller.restoreDeletedUserController);
+router.get('/', authMiddleware, allowRoles(ROLES.ADMIN), controller.getUsersController);
+router.delete('/:id', authMiddleware, allowRoles(ROLES.ADMIN), validate(UserIdValidator, "params"), controller.softDeleteUserController)
+router.delete('/:id/force', authMiddleware, allowRoles(ROLES.ADMIN), controller.forceDeleteUserController);
+router.patch('/:id/restore', authMiddleware, allowRoles(ROLES.ADMIN), controller.restoreDeletedUserController);
+
 
 export default router;
