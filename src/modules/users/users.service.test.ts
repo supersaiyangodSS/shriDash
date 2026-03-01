@@ -129,6 +129,30 @@ it("should return deleted user", async () => {
   });
 });
 
+describe("forceDeleteUser", () => {
+    it("should error if user not found", async () => {
+    (userRepository.forceDeleteUserRepo as jest.Mock)
+    .mockResolvedValue(null);
+
+    await expect(forceDeleteUser('123')).rejects.toThrow('User not found');
+    expect(userRepository.forceDeleteUserRepo).toHaveBeenCalledWith('123');
+    });
+
+    it("should delete user", async () => {
+        const mockUser = {
+            _id: '123',
+            email: 'test@gmail.com'
+        };
+
+        (userRepository.forceDeleteUserRepo as jest.Mock)
+        .mockResolvedValue(mockUser);
+
+        const result = await forceDeleteUser('123');
+        expect(userRepository.forceDeleteUserRepo).toHaveBeenCalledWith('123');
+        expect(result).toEqual(mockUser);
+    })
+})
+
 describe("restoreUser", () => {
   it("should throw error if user not found", async () => {
       (userRepository.restoreDeleteUserRepo as jest.Mock).mockResolvedValue(null);
@@ -151,7 +175,6 @@ describe("restoreUser", () => {
     (userRepository.restoreDeleteUserRepo as jest.Mock).mockResolvedValue(
       mockUser,
     );
-
 
     const result = await restoreDeletedUser("123");
     expect(userRepository.restoreDeleteUserRepo).toHaveBeenCalledWith("123");
