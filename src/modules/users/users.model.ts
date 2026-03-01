@@ -1,8 +1,13 @@
-import { InferSchemaType, Schema, model } from "mongoose";
+import { HydratedDocument, Schema, model, Model} from "mongoose";
 import bcrypt from "bcrypt";
 import { ROLES } from "@/constants/roles";
+import { IUser, IUserMethods } from "./user.interface";
 
-const userSchema = new Schema(
+export type UserDocument =HydratedDocument<IUser, IUserMethods>; //explain
+
+type UserModel = Model<IUser, {}, IUserMethods>; //explain
+
+const userSchema = new Schema<IUser, UserModel, IUserMethods>( //explain
   {
     firstName: {
       type: String,
@@ -78,6 +83,4 @@ userSchema.methods.comparePassword = async function (password: string) {
      return bcrypt.compare(password, this.password);
 }
 
-export type User = InferSchemaType<typeof userSchema>;
-
-export const User = model("User", userSchema);
+export const User = model<IUser, UserModel>("User", userSchema); // explain
