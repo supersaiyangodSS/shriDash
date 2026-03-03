@@ -12,7 +12,6 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
         const headerToken = header?.startsWith('Bearer ') ? header.split(" ")[1] : null;
 
         const token = cookieToken || headerToken;
-        logger.warn({ agent: req.headers["user-agent"], token }, 'this is auth middleware');
         if (!token) {
             throw new AppError('Token missing', HTTP_CODES.UNAUTHORIZED);
         }

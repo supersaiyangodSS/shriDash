@@ -13,9 +13,7 @@ export type CreateUserInput = z.infer<typeof CreateUserValidator>;
 export const UpdateUserValidator = z.object({
     firstName: z.string().min(2).optional(),
     lastName: z.string().min(2).optional(),
-    email: z.string().email().optional(),
-    username: z.string().min(3).optional(),
-    password: z.string().min(8).optional()
+    username: z.string().min(3).optional()
 });
 
 export const UserIdValidator = z.object({
