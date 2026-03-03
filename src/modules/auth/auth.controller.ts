@@ -13,7 +13,7 @@ export const loginController = async (req: Request, res: Response, next: NextFun
             sameSite: "strict",
             maxAge: 24 * 60 * 60 * 1000,
         });
-        successResponse(res, HTTP_CODES.OK, 'token', token);
+        successResponse(res, HTTP_CODES.OK, 'logged in successful');
     } catch (error) {
         next(error)
     }
