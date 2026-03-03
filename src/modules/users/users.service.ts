@@ -52,7 +52,7 @@ export const restoreDeletedUser = async (id: string) => {
 };
 
 export const updateUser = async (id: string, payload: UpdateUserDTO) => {
-  const user = await userRepository.findUserById(id);
+  const user = await userRepository.findUserByIdRepo(id);
   if (!user) throw new AppError("User not found", HTTP_CODES.NOT_FOUND);
   const editedUser = await userRepository.updateUserRepo(id, payload);
   return editedUser;
