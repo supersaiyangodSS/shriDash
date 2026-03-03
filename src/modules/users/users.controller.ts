@@ -78,3 +78,17 @@ export const restoreDeletedUserController = async (req: Request, res: Response, 
             next(error);
         }
 }
+
+export const updateUserController = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const payload = req.body;
+        const userId = req.params.id as string;
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            throw new AppError('Invalid user id', HTTP_CODES.BAD_REQUEST);
+        }
+        const user = await userService.updateUser(userId, payload);
+        successResponse(res, HTTP_CODES.OK, 'User updated', user);
+    } catch (error) {
+        next(error);
+    }
+}
