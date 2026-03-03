@@ -9,10 +9,10 @@ import { ROLES } from "@/constants/roles";
 const router = Router();
 
 router.post('/', validate(CreateUserValidator), controller.createUserController);
-router.get('/', authMiddleware, allowRoles(ROLES.ADMIN), controller.getUsersController);
-router.delete('/:id', authMiddleware, allowRoles(ROLES.ADMIN), validate(UserIdValidator, "params"), controller.softDeleteUserController)
-router.delete('/:id/force', authMiddleware, allowRoles(ROLES.ADMIN), controller.forceDeleteUserController);
-router.patch('/:id/restore', authMiddleware, allowRoles(ROLES.ADMIN), controller.restoreDeletedUserController);
-
+router.get('/', authMiddleware, allowRoles(ROLES.SUPERADMIN, ROLES.ADMIN), controller.getUsersController);
+router.delete('/:id', validate(UserIdValidator), authMiddleware, allowRoles(ROLES.SUPERADMIN, ROLES.ADMIN), validate(UserIdValidator, "params"), controller.softDeleteUserController)
+router.delete('/:id/force', validate(UserIdValidator), authMiddleware, allowRoles(ROLES.SUPERADMIN), controller.forceDeleteUserController);
+router.patch('/:id/restore', validate(UserIdValidator), authMiddleware, allowRoles(ROLES.SUPERADMIN, ROLES.ADMIN), controller.restoreDeletedUserController);
+router.patch('/:id', validate(UpdateUserValidator), authMiddleware, allowRoles(ROLES.SUPERADMIN, ROLES.ADMIN), controller.updateUserController);
 
 export default router;
