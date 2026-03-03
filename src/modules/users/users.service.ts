@@ -2,6 +2,7 @@ import { AppError } from "@/errors/AppError";
 import { HTTP_CODES } from "@/constants/httpCodes";
 import { CreatUserDTO } from "@/modules/users/dto/createUser.dto";
 import * as userRepository from "@/modules/users/users.repository";
+import { UpdateUserDTO } from "./dto/UpdateUser.dto";
 
 export const createUser = async (data: CreatUserDTO) => {
   const existing = await userRepository.findByEmailorUsernameRepo(
@@ -49,3 +50,10 @@ export const restoreDeletedUser = async (id: string) => {
   }
   return user;
 };
+
+export const updateUser = async (id: string, payload: UpdateUserDTO) => {
+  const user = await userRepository.findUserById(id);
+  if (!user) throw new AppError("User not found", HTTP_CODES.NOT_FOUND);
+  const editedUser = await userRepository.updateUserRepo(id, payload);
+  return editedUser;
+}
