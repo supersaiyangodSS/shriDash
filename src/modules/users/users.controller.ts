@@ -5,6 +5,7 @@ import { HTTP_CODES } from "@/constants/httpCodes";
 import { successResponse } from "@/utils/response";
 import { AppError } from "@/errors/AppError";
 import { logger } from "@/utils/logger";
+import { ROLES } from "@/constants/roles";
 
 export const createUserController = async (
     req: Request,
@@ -88,6 +89,20 @@ export const updateUserController = async (req: Request, res: Response, next: Ne
         }
         const user = await userService.updateUser(userId, payload);
         successResponse(res, HTTP_CODES.OK, 'User updated', user);
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const updateUserPasswordController = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const id = req.params.id as string;
+        const password = req.body.password;
+        if ((req as any).user.role === ROLES.USER && (req as any).user.id !== id)
+            throw new AppError("You can only set your own password", HTTP_CODES.FORBIDDEN);
+        if (!mongoose.Types.ObjectId.isValid(id)) throw new AppError('Invalid user id', HTTP_CODES.BAD_REQUEST);
+        const result = await userService.updateUserPass(id, password);
+        successResponse(res, HTTP_CODES.OK, 'User password reset successful', result);
     } catch (error) {
         next(error);
     }
