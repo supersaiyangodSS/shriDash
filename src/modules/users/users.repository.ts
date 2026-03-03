@@ -55,7 +55,7 @@ export const restoreDeleteUserRepo = async (id: string) => {
 };
 
 export const findUserByIdRepo = async (id: string) => {
-  const user = await User.findById(id).lean();
+  const user = await User.findOne({ id });
   if (!user) throw new AppError("User not found", HTTP_CODES.NOT_FOUND);
   return user;
 }
@@ -69,7 +69,7 @@ export const findUserByUsernameRepo = async (username: string) => {
 export const updateUserRepo = async (id: string, data: UpdateUserDTO) => {
   const user = await User.findById(id);
 
-  if(!user) throw new AppError("User not found", HTTP_CODES.NOT_FOUND);
+  if(!user) return null;
 
   if(data.username && data.username !== user.username) {
     const exists = await User.exists({ username: data.username, _id: { $ne: id } });
@@ -78,6 +78,18 @@ export const updateUserRepo = async (id: string, data: UpdateUserDTO) => {
 
   Object.assign(user, data);
 
+  await user.save();
+  return user.toObject();
+}
+
+export const updateUserPassRepo = async (id: string, password: string) => {
+  const user = await User.findById(id);
+  if (!user) return null;
+
+  const isSame = await user.comparePassword(password);
+  if(isSame) throw new AppError("New password cannot be same as old password", HTTP_CODES.BAD_REQUEST);
+
+  user.password = password;
   await user.save();
   return user.toObject();
 }
