@@ -8,7 +8,6 @@ import helmet from 'helmet';
 import cors from 'cors';
 import hpp from 'hpp';
 import compression from 'compression';
-import mongoSanitize from 'express-mongo-sanitize';
 
 dns.setServers(['8.8.8.8', '8.8.4.4']);
 
