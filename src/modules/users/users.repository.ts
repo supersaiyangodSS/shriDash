@@ -83,7 +83,7 @@ export const updateUserRepo = async (id: string, data: UpdateUserDTO) => {
 }
 
 export const updateUserPassRepo = async (id: string, password: string) => {
-  const user = await User.findById(id);
+  const user = await User.findById(id).select('+password');
   if (!user) return null;
 
   const isSame = await user.comparePassword(password);
