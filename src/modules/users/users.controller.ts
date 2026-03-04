@@ -4,7 +4,6 @@ import mongoose from "mongoose";
 import { HTTP_CODES } from "@/constants/httpCodes";
 import { successResponse } from "@/utils/response";
 import { AppError } from "@/errors/AppError";
-import { logger } from "@/utils/logger";
 import { ROLES } from "@/constants/roles";
 
 export const createUserController = async (
