@@ -20,13 +20,9 @@ app.use(cors({
 }));
 app.use(cookieParser());
 app.use(express.json())
+app.use(apiLimiter);
 app.use(hpp());
-app.use('/api', apiLimiter, apiRouter);
-
-app.get('/', apiLimiter, (req: Request, res: Response) => {
-    res.json({ message: 'Homepage' });
-})
-
+app.use('/api', apiRouter);
 app.use(errorHandler);
 
 export default app;
