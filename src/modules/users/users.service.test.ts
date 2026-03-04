@@ -5,6 +5,7 @@ import {
   restoreDeletedUser,
   softDeleteUser,
   updateUser,
+  updateUserPass,
 } from "./users.service";
 
 import * as userRepository from "./users.repository";
@@ -203,5 +204,26 @@ describe("updateUser", () => {
       .rejects.toThrow("User not found");
 
     expect(userRepository.updateUserRepo).toHaveBeenCalledWith('123', {});
+  })
+});
+
+describe("updateUserPass", () => {
+  it("should return password reset successfull with updated user", async () => {
+    const mockUser = {
+      id: "123",
+      firstName: "vedant",
+      password: "thisispassword"
+    };
+    (userRepository.updateUserPassRepo as jest.Mock).mockResolvedValue(mockUser);
+
+    const result = await updateUserPass('123', 'thisispassword');
+    expect(userRepository.updateUserPassRepo).toHaveBeenCalledWith('123', 'thisispassword');
+    expect(result).toEqual(mockUser);
+  });
+
+  it("should throw error if user not found", async () =>{
+    (userRepository.updateUserPassRepo as jest.Mock).mockResolvedValue(null);
+
+    await expect(updateUserPass('123', 'pass')).rejects.toThrow("User not found");
   })
 })
