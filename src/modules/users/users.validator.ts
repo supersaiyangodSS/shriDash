@@ -15,7 +15,8 @@ export const UpdateUserValidator = z.object({
 }).strict();
 
 export const UpdateUserPassValidator = z.object({
-    password: z.string().min(8, 'Password must be at least 8 characters')
+    password: z.string().min(8, 'Password must be at least 8 characters'),
+    newPassword: z.string().min(8, 'New password must be at least 8 characters')
 }).strict();
 
 export const UserIdValidator = z.object({
