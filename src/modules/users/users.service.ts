@@ -1,10 +1,10 @@
 import { AppError } from "@/errors/AppError";
 import { HTTP_CODES } from "@/constants/httpCodes";
-import { CreatUserDTO } from "@/modules/users/dto/createUser.dto";
+import { CreateUserDTO } from "@/modules/users/dto/createUser.dto";
 import * as userRepository from "@/modules/users/users.repository";
 import { UpdateUserDTO } from "./dto/UpdateUser.dto";
 
-export const createUser = async (data: CreatUserDTO) => {
+export const createUser = async (data: CreateUserDTO) => {
   const existing = await userRepository.findByEmailorUsernameRepo(
     data.email,
     data.username,
@@ -28,37 +28,33 @@ export const getUsers = async (page: number, limit: number) => {
 };
 
 export const softDeleteUser = async (id: string) => {
-  const user = await userRepository.softDeleteUserRepo(id);
-  if (!user) {
-    throw new AppError("User not found", HTTP_CODES.NOT_FOUND);
-  }
-  return user;
+  const user = await userRepository.findByIdRepo(id);
+  if (!user) throw new AppError("User not found", HTTP_CODES.NOT_FOUND);
+
+  return await userRepository.softDeleteUserRepo(id);
 };
 
 export const forceDeleteUser = async (id: string) => {
-  const user = await userRepository.forceDeleteUserRepo(id);
-  if (!user) {
-    throw new AppError("User not found", HTTP_CODES.NOT_FOUND);
-  }
-  return user;
+  const user = await userRepository.findUserByIdRepo(id);
+  if (!user) throw new AppError("User not found", HTTP_CODES.NOT_FOUND);
+  return await userRepository.forceDeleteUserRepo(id);
 };
 
 export const restoreDeletedUser = async (id: string) => {
-  const user = await userRepository.restoreDeleteUserRepo(id);
-  if (!user) {
-    throw new AppError("User not found", HTTP_CODES.NOT_FOUND);
-  }
-  return user;
+  const user = await userRepository.findByIdRepo(id);
+  if (!user) throw new AppError("User not found", HTTP_CODES.NOT_FOUND);
+  return await userRepository.restoreDeleteUserRepo(id);
 };
 
 export const updateUser = async (id: string, payload: UpdateUserDTO) => {
+  const user = await userRepository.findByIdRepo(id);
+  if (!user) throw new AppError("User not found", HTTP_CODES.NOT_FOUND);
   const updatedUser = await userRepository.updateUserRepo(id, payload);
-  if (!updatedUser) throw new AppError("User not found", HTTP_CODES.NOT_FOUND);
   return updatedUser;
 }
 
-export const updateUserPass = async (id: string, password: string) => {
-  const updatedUser = await userRepository.updateUserPassRepo(id, password);
-  if (!updatedUser) throw new AppError("User not found", HTTP_CODES.NOT_FOUND);
-  return updatedUser;
+export const updateUserPass = async (id: string, oldPassword: string, newPassword: string) => {
+  const user = await userRepository.updateUserPassRepo(id, oldPassword, newPassword);
+  if (!user) throw new AppError("User not found", HTTP_CODES.NOT_FOUND);
+  return user;
 }

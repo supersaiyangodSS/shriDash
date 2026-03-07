@@ -1,8 +1,20 @@
 import { AppError } from "@/errors/AppError";
-import { CreatUserDTO } from "./dto/createUser.dto";
+import { CreateUserDTO } from "./dto/createUser.dto";
 import { User } from "./users.model";
 import { HTTP_CODES } from "@/constants/httpCodes";
 import { UpdateUserDTO } from "./dto/UpdateUser.dto";
+
+export const findByIdRepo = async (id: string) => {
+  const user = await User.findById(id).lean();
+  if (!user) return null;
+  return user;
+}
+
+export const findByEmailRepo = async (email: string) => {
+  const user = await User.findOne({ email }).lean();
+  if (!user) return null;
+  return user;
+}
 
 export const findByEmailorUsernameRepo = async (
   email: string,
@@ -13,7 +25,7 @@ export const findByEmailorUsernameRepo = async (
   }).lean();
 };
 
-export const createUserRepo = async (data: CreatUserDTO) => {
+export const createUserRepo = async (data: CreateUserDTO) => {
   const user = await User.create(data);
   return user.toObject();
 };
@@ -82,14 +94,21 @@ export const updateUserRepo = async (id: string, data: UpdateUserDTO) => {
   return user.toObject();
 }
 
-export const updateUserPassRepo = async (id: string, password: string) => {
+export const updateUserPassRepo = async (id: string, oldPassword: string, newPassword: string) => {
   const user = await User.findById(id).select('+password');
   if (!user) return null;
 
-  const isSame = await user.comparePassword(password);
-  if(isSame) throw new AppError("New password cannot be same as old password", HTTP_CODES.BAD_REQUEST);
+  const isMatch = await user.comparePassword(oldPassword);
+  if(!isMatch)
+    throw new AppError("Invalid current password", HTTP_CODES.BAD_REQUEST);
 
-  user.password = password;
-  await user.save();
-  return user.toObject();
+  const isSame = await user.comparePassword(newPassword);
+  if(isSame)
+    throw new AppError("New password cannot be same as old password", HTTP_CODES.BAD_REQUEST);
+
+  user.password = newPassword;
+  user.save();
+  const userObj = user.toObject();
+  const { password, ...safeUser } = userObj;
+  return safeUser;
 }
