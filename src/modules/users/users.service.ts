@@ -58,3 +58,9 @@ export const updateUserPass = async (id: string, oldPassword: string, newPasswor
   if (!user) throw new AppError("User not found", HTTP_CODES.NOT_FOUND);
   return user;
 }
+
+export const updateUserEmail = async (id: string, email: string) => {
+  const user = await userRepository.updateUserEmailRepo(id, email);
+  if (!user) throw new AppError("User not found", HTTP_CODES.NOT_FOUND);
+  return user;
+}

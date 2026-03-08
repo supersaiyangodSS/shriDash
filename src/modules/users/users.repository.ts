@@ -112,3 +112,12 @@ export const updateUserPassRepo = async (id: string, oldPassword: string, newPas
   const { password, ...safeUser } = userObj;
   return safeUser;
 }
+
+export const updateUserEmailRepo = async (id: string, email: string) => {
+  const user = await User.findById(id);
+  if (!user) return null;
+
+  user.email = email;
+  user.save();
+  return user;
+}
