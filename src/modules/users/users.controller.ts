@@ -96,12 +96,36 @@ export const updateUserController = async (req: Request, res: Response, next: Ne
 export const updateUserPasswordController = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = req.params.id as string;
-        const password = req.body.password;
+        const oldPassword = req.body.oldPassword;
+        const newPassword = req.body.newPassword;
+
         if ((req as any).user.role === ROLES.USER && (req as any).user.id !== id)
             throw new AppError("You can only set your own password", HTTP_CODES.FORBIDDEN);
-        if (!mongoose.Types.ObjectId.isValid(id)) throw new AppError('Invalid user id', HTTP_CODES.BAD_REQUEST);
-        const result = await userService.updateUserPass(id, password);
+
+        if (!mongoose.Types.ObjectId.isValid(id))
+            throw new AppError('Invalid user id', HTTP_CODES.BAD_REQUEST);
+
+        const result = await userService.updateUserPass(id, oldPassword, newPassword);
+
         successResponse(res, HTTP_CODES.OK, 'User password reset successful', result);
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const updateUserEmailController = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const id = req.params.id as string;
+        const email = req.body.email;
+
+        if ((req as any).user.role === ROLES.USER && (req as any).user.id !== id) {
+            throw new AppError('you can only set your own email', HTTP_CODES.FORBIDDEN);
+        }
+        if(!mongoose.Types.ObjectId.isValid(id)) {
+            throw new AppError('Invalid user id', HTTP_CODES.BAD_REQUEST);
+        }
+        const result = await userService.updateUserEmail(id, email);
+        successResponse(res, HTTP_CODES.OK, 'User email updated successfully', result);
     } catch (error) {
         next(error);
     }
