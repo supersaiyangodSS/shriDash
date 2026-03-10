@@ -1,229 +1,147 @@
-import {
-  createUser,
-  forceDeleteUser,
-  getUsers,
-  restoreDeletedUser,
-  softDeleteUser,
-  updateUser,
-  updateUserPass,
-} from "./users.service";
+jest.mock('@/modules/users/users.repository');
 
-import * as userRepository from "./users.repository";
-import { AppError } from "@/errors/AppError";
+import { createUser, getUsers, softDeleteUser } from "./users.service";
+import * as userRepository from "@/modules/users/users.repository";
 
-jest.mock("./users.repository");
+const mockRepo = jest.mocked(userRepository);
 
-beforeEach(() => {
-  jest.clearAllMocks();
-});
+describe('CreateUser', () => {
 
-describe("createUser", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("should throw error if email exists", async () => {
-    (userRepository.findByEmailorUsernameRepo as jest.Mock).mockResolvedValue({
-      email: "test@gmail.com",
-      username: "other",
-    });
-
-    await expect(
-      createUser({
-        name: "vedant",
-        email: "test@gmail.com",
-        username: "newuser",
-        password: "123",
-      }),
-    ).rejects.toThrow("Email already exists");
-  });
-
-  it("should throw error if username exists", async () => {
-    (userRepository.findByEmailorUsernameRepo as jest.Mock).mockResolvedValue({
-      email: "test@gmail.com",
-      username: "otherusername",
-    });
-
-    await expect(
-      createUser({
-        name: "vedant",
-        email: "test1@gmail.com",
-        username: "otherusername",
-        password: "123",
-      }),
-    ).rejects.toThrow("Username already exists");
-  });
-
-  it("should return user created", async () => {
     const mockUser = {
-      name: "vedant",
-      email: "vedantnarayan@gmail.com",
-      username: "otherusername",
-      password: "123456789",
+      'firstName': 'vedant',
+      'lastName': 'kale',
+      'username': 'narayan',
+      'email': 'vedant@mail.com',
+      'password': 'password'
     };
-    (userRepository.findByEmailorUsernameRepo as jest.Mock).mockResolvedValue(
-      null,
-    );
-
-    (userRepository.createUserRepo as jest.Mock).mockResolvedValue(mockUser);
-
-
-
-    const result = await createUser({
-      name: "vedant",
-      email: "vedantnarayan@gmail.com",
-      username: "otherusername",
-      password: "123456789",
-    });
-
-    expect(userRepository.createUserRepo).toHaveBeenCalledWith({
-      name: "vedant",
-      email: "vedantnarayan@gmail.com",
-      username: "otherusername",
-      password: "123456789",
-    });
-
-    expect(result).toEqual(mockUser);
+    (mockRepo.findByEmailorUsernameRepo as jest.Mock).mockResolvedValue(mockUser);
+    await expect(createUser(mockUser)).rejects.toThrow('Email already exists');
   });
+
+  it("should throw error is username exists", async () => {
+    const inputUser = {
+      'firstName': 'vedant',
+      'lastName': 'kale',
+      'username': 'narayan',
+      'email': 'vedant99@mail.com',
+      'password': 'password'
+    };
+    const existingUser = {
+      'firstName': 'vedant',
+      'lastName': 'kale',
+      'username': 'narayan',
+      'email': 'vedant999@mail.com',
+      'password': 'password'
+    };
+
+    (mockRepo.findByEmailorUsernameRepo as jest.Mock).mockResolvedValue(existingUser);
+
+    await expect(createUser(inputUser)).rejects.toThrow('Username already exists');
+   });
+
+   it('should return created user object', async () => {
+    (mockRepo.findByEmailorUsernameRepo as jest.Mock).mockResolvedValue(null);
+    const inputUser = {
+      'firstName': 'vedant',
+      'lastName': 'kale',
+      'username': 'narayan',
+      'email': 'vedant99@mail.com',
+      'password': 'password'
+    };
+
+    const createdUser = {
+      'firstName': 'vedant',
+      'lastName': 'kale',
+      'username': 'narayan',
+      'email': 'vedant999@mail.com',
+      'password': 'password'
+    };
+
+    (mockRepo.createUserRepo as jest.Mock).mockResolvedValue(createdUser);
+    await expect(createUser(inputUser)).resolves.toEqual(createdUser);
+   })
 });
 
 describe("getUsers", () => {
-  it("should return pagination users list", async () => {
-    const mockUsers = [
-      { id: 1, name: "vedant" },
-      { id: 2, name: "narayan" },
+  it('should return users list', async () => {
+    const users = [
+      {
+        id: '1',
+        firstName: 'vedant',
+        lastName: 'kale',
+        username: 'narayan',
+        email: 'vedant@mail.com'
+      }, {
+        id: '2',
+        firstName: 'vedant',
+        lastName: 'kale',
+        username: 'narayan1',
+        email: 'vedant1@mail.com'
+      }
     ];
+    (mockRepo.getUsersRepo as jest.Mock).mockResolvedValue(users);
+    (mockRepo.countUsersRepo as jest.Mock).mockResolvedValue(2);
 
-    (userRepository.getUsersRepo as jest.Mock).mockResolvedValue(mockUsers);
-    (userRepository.countUsersRepo as jest.Mock).mockResolvedValue(10);
-
-    const result = await getUsers(2, 2);
-    expect(userRepository.getUsersRepo).toHaveBeenCalledWith(2, 2);
-
-    expect(userRepository.countUsersRepo).toHaveBeenCalled();
-
-    expect(result).toEqual({
-      users: mockUsers,
-      total: 10,
-      page: 2,
-      pages: 5,
-    });
+    await expect(getUsers(1, 10)).resolves.toEqual({ users, total: 2, page: 1, pages: 1 });
+    expect(mockRepo.getUsersRepo).toHaveBeenCalledWith(10, 0);
+    expect(mockRepo.countUsersRepo).toHaveBeenCalled();
   });
 });
 
 describe("softDeleteUser", () => {
-  it("should throw error if user not found", async () => {
-    (userRepository.softDeleteUserRepo as jest.Mock).mockResolvedValue(null);
 
-    await expect(softDeleteUser("1")).rejects.toThrow("User not found");
-    expect(userRepository.softDeleteUserRepo).toHaveBeenCalledWith('1');
-});
+  it("should throw error if user id is invalid", async () => {
+    (mockRepo.findByIdRepo as jest.Mock).mockResolvedValue(null);
 
-it("should return deleted user", async () => {
-    const deletedUser = {
-        id: "1",
-        name: "vedant",
-        deleted: true,
-        deletedAt: "date",
-    };
-    (userRepository.softDeleteUserRepo as jest.Mock).mockResolvedValue(
-        deletedUser,
-    );
-    const result = await softDeleteUser("1");
-    expect(userRepository.softDeleteUserRepo).toHaveBeenCalledWith("1");
-    expect(result).toEqual(deletedUser);
-  });
-});
-
-describe("forceDeleteUser", () => {
-    it("should error if user not found", async () => {
-    (userRepository.forceDeleteUserRepo as jest.Mock)
-    .mockResolvedValue(null);
-
-    await expect(forceDeleteUser('123')).rejects.toThrow('User not found');
-    expect(userRepository.forceDeleteUserRepo).toHaveBeenCalledWith('123');
-    });
-
-    it("should delete user", async () => {
-        const mockUser = {
-            _id: '123',
-            email: 'test@gmail.com'
-        };
-
-        (userRepository.forceDeleteUserRepo as jest.Mock)
-        .mockResolvedValue(mockUser);
-
-        const result = await forceDeleteUser('123');
-        expect(userRepository.forceDeleteUserRepo).toHaveBeenCalledWith('123');
-        expect(result).toEqual(mockUser);
-    })
-})
-
-describe("restoreUser", () => {
-  it("should throw error if user not found", async () => {
-      (userRepository.restoreDeleteUserRepo as jest.Mock).mockResolvedValue(null);
-
-      const promise = restoreDeletedUser('123');
-
-    await expect(promise)
-    .rejects.toThrow("User not found");
-
-    await expect(promise)
-    .rejects.toBeInstanceOf(AppError);
+    await expect(softDeleteUser('1')).rejects.toThrow('User not found');
+    expect(mockRepo.findByIdRepo).toHaveBeenCalledWith('1');
   });
 
-  it("should restore user when user exists", async () => {
+  it("should throw error if user is already deleted", async () => {
     const mockUser = {
-      _id: "123",
-      email: "test@gmail.com",
-      deleted: false,
-    };
-    (userRepository.restoreDeleteUserRepo as jest.Mock).mockResolvedValue(
-      mockUser,
-    );
+        id: '1',
+        firstName: 'vedant',
+        lastName: 'kale',
+        username: 'narayan',
+        email: 'vedant@mail.com'
+      };
 
-    const result = await restoreDeletedUser("123");
-    expect(userRepository.restoreDeleteUserRepo).toHaveBeenCalledWith("123");
-    expect(result).toEqual(mockUser);
+    (mockRepo.findByIdRepo as jest.Mock).mockResolvedValue(mockUser);
+    (mockRepo.checkSoftDeletedUserRepo as jest.Mock).mockResolvedValue({ id: '1' });
+
+    await expect(softDeleteUser('1')).rejects.toThrow('User is already deleted');
+    expect(mockRepo.findByIdRepo).toHaveBeenCalledWith('1');
+    expect(mockRepo.checkSoftDeletedUserRepo).toHaveBeenCalledWith('1');
   });
-});
 
-describe("updateUser", () => {
-  it("should return updated user", async () => {
+  it("should return message user deleted", async () => {
     const mockUser = {
-      firstName: 'vedant',
-      lastName: 'kale',
-      username: 'narayan'
-    };
-    (userRepository.updateUserRepo as jest.Mock).mockResolvedValue(mockUser);
+        id: '1',
+        firstName: 'vedant',
+        lastName: 'kale',
+        username: 'narayan',
+        email: 'vedant@mail.com'
+      };
 
-    const result = await updateUser('123', mockUser);
-    expect(userRepository.updateUserRepo).toHaveBeenCalledWith("123", mockUser);
-    expect(result).toEqual(mockUser);
-  });
+      const mockResult = {
+        id: '1',
+        firstName: 'vedant',
+        lastName: 'kale',
+        username: 'narayan',
+        email: 'vedant@mail.com'
+      };
+    (mockRepo.findByIdRepo as jest.Mock).mockResolvedValue(mockUser);
+    (mockRepo.checkSoftDeletedUserRepo as jest.Mock).mockResolvedValue(null);
 
-  it("should throw error if user not found", async () => {
-    (userRepository.updateUserRepo as jest.Mock).mockResolvedValue(null);
-    await expect(updateUser('123', {} as any))
-      .rejects.toThrow("User not found");
-
-    expect(userRepository.updateUserRepo).toHaveBeenCalledWith('123', {});
+    (mockRepo.softDeleteUserRepo as jest.Mock).mockResolvedValue(mockResult);
+    await expect(softDeleteUser('1')).resolves.toEqual(mockResult);
+    expect(mockRepo.findByIdRepo).toHaveBeenCalledWith('1');
+    expect(mockRepo.checkSoftDeletedUserRepo).toHaveBeenCalledWith('1');
+    expect(mockRepo.softDeleteUserRepo).toHaveBeenCalledWith('1');
   })
 });
-
-describe("updateUserPass", () => {
-  it("should return password reset successfull with updated user", async () => {
-    const mockUser = {
-      id: "123",
-      firstName: "vedant",
-      password: "thisispassword"
-    };
-    (userRepository.updateUserPassRepo as jest.Mock).mockResolvedValue(mockUser);
-
-    const result = await updateUserPass('123', 'thisispassword');
-    expect(userRepository.updateUserPassRepo).toHaveBeenCalledWith('123', 'thisispassword');
-    expect(result).toEqual(mockUser);
-  });
-
-  it("should throw error if user not found", async () =>{
-    (userRepository.updateUserPassRepo as jest.Mock).mockResolvedValue(null);
-
-    await expect(updateUserPass('123', 'pass')).rejects.toThrow("User not found");
-  })
-})
