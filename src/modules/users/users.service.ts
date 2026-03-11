@@ -30,7 +30,8 @@ export const getUsers = async (page: number, limit: number) => {
 export const softDeleteUser = async (id: string) => {
   const user = await userRepository.findByIdRepo(id);
   if (!user) throw new AppError("User not found", HTTP_CODES.NOT_FOUND);
-
+  const deletedUser = await userRepository.checkSoftDeletedUserRepo(id);
+  if (deletedUser) throw new AppError("User is already deleted", HTTP_CODES.CONFLICT);
   return await userRepository.softDeleteUserRepo(id);
 };
 
