@@ -12,7 +12,7 @@ router.post('/', validate(CreateUserValidator), controller.createUserController)
 router.get('/', authMiddleware, allowRoles(ROLES.SUPERADMIN, ROLES.ADMIN), controller.getUsersController);
 router.delete('/:id',validate(UserIdValidator, "params"), authMiddleware, allowRoles(ROLES.SUPERADMIN, ROLES.ADMIN), controller.softDeleteUserController)
 router.delete('/:id/force', validate(UserIdValidator), authMiddleware, allowRoles(ROLES.SUPERADMIN), controller.forceDeleteUserController);
-router.patch('/:id/restore', validate(UserIdValidator), authMiddleware, allowRoles(ROLES.SUPERADMIN, ROLES.ADMIN), controller.restoreDeletedUserController);
+router.patch('/:id/restore', validate(UserIdValidator, "params"), authMiddleware, allowRoles(ROLES.SUPERADMIN, ROLES.ADMIN), controller.restoreDeletedUserController);
 router.patch('/:id', validate(UpdateUserValidator), authMiddleware, allowRoles(ROLES.SUPERADMIN, ROLES.ADMIN), controller.updateUserController);
 router.patch('/:id/reset-password', validate(UpdateUserPassValidator), authMiddleware, allowRoles(ROLES.SUPERADMIN, ROLES.ADMIN, ROLES.USER), controller.updateUserPasswordController);
 
