@@ -18,3 +18,16 @@ export const loginController = async (req: Request, res: Response, next: NextFun
         next(error)
     }
 }
+
+export const logoutController = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: env.NODE_ENV === "production",
+            sameSite: "strict",
+        });
+        successResponse(res, HTTP_CODES.OK, 'logged out successful');
+    } catch (error) {
+        next(error);
+    }
+}
