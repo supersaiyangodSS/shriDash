@@ -23,6 +23,10 @@ export const UserIdValidator = z.object({
     id: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid user id")
 }).strict();
 
+export const UserEmailValidator = z.object({
+    email: z.string().min(5, 'invalid email')
+})
+
 export type CreateUserInput = z.infer<typeof CreateUserValidator>;
 export type UpdateUserInput = z.infer<typeof UpdateUserValidator>;
 export type UserIdInput = z.infer<typeof UserIdValidator>;
