@@ -51,6 +51,11 @@ export const softDeleteUserRepo = async (id: string) => {
   );
 };
 
+export const checkSoftDeletedUserRepo = async (id: string) => {
+  const exists = await User.exists({ _id: id, deleted: true });
+  return exists;
+}
+
 export const forceDeleteUserRepo = async (id: string) => {
   return await User.findByIdAndDelete(id);
 };
