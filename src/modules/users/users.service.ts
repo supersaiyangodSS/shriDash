@@ -36,7 +36,7 @@ export const softDeleteUser = async (id: string) => {
 };
 
 export const forceDeleteUser = async (id: string) => {
-  const user = await userRepository.findUserByIdRepo(id);
+  const user = await userRepository.findByIdRepo(id);
   if (!user) throw new AppError("User not found", HTTP_CODES.NOT_FOUND);
   return await userRepository.forceDeleteUserRepo(id);
 };
@@ -44,6 +44,8 @@ export const forceDeleteUser = async (id: string) => {
 export const restoreDeletedUser = async (id: string) => {
   const user = await userRepository.findByIdRepo(id);
   if (!user) throw new AppError("User not found", HTTP_CODES.NOT_FOUND);
+  const deletedUser = await userRepository.checkSoftDeletedUserRepo(id);
+  if (!deletedUser) throw new AppError('User is not deleted', HTTP_CODES.NOT_FOUND);
   return await userRepository.restoreDeleteUserRepo(id);
 };
 
