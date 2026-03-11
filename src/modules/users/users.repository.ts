@@ -122,6 +122,8 @@ export const updateUserEmailRepo = async (id: string, email: string) => {
   const user = await User.findById(id);
   if (!user) return null;
 
+  if(user && user.email === email) throw new AppError('Email must be different from current email', HTTP_CODES.CONFLICT);
+
   user.email = email;
   user.save();
   return user;
