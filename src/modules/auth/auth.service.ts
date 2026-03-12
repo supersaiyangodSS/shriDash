@@ -10,9 +10,6 @@ export const generateTokenService = (payload: object) => {
 }
 
 export const loginService = async (payload: LoginDTO) => {
-    if (!payload.email || !payload.password)
-        throw new AppError('Email and Password are required!', HTTP_CODES.BAD_REQUEST);
-
     const user = await validateUserCredentialsRepo(payload.email, payload.password);
     if (!user) throw new AppError('Invalid Credentials', HTTP_CODES.UNAUTHORIZED);
 
