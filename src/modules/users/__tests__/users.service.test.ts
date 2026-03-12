@@ -1,5 +1,3 @@
-import {forceDeleteUserRepo} from "@/modules/users/users.repository";
-
 jest.mock('@/modules/users/users.repository');
 
 import {
@@ -10,8 +8,8 @@ import {
   softDeleteUser,
   updateUser,
   updateUserPass,
-  updateUserEmail
-} from "./users.service";
+  updateUserEmail,
+} from "../users.service";
 import * as userRepository from "@/modules/users/users.repository";
 
 const mockRepo = jest.mocked(userRepository);
