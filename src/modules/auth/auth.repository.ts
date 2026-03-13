@@ -1,7 +1,7 @@
 import { User } from "../users/users.model";
 
 export const validateUserCredentialsRepo = async (email: string,  password: string) => {
-    const user = await User.findOne({email}).select('+password');
+    const user = await User.findOne({email, deleted: false}).select('+password');
 
     if (!user) return null;
 

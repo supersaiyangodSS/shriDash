@@ -122,9 +122,18 @@ export const updateUserEmailRepo = async (id: string, email: string) => {
   const user = await User.findById(id);
   if (!user) return null;
 
-  if(user && user.email === email) throw new AppError('Email must be different from current email', HTTP_CODES.CONFLICT);
+  const normalizedEmail = email.trim().toLowerCase();
 
-  user.email = email;
-  user.save();
+  if (user.email === normalizedEmail) {
+    throw new AppError('Email must be different from current email', HTTP_CODES.CONFLICT);
+  }
+
+  const existingUser = await User.exists({ email: normalizedEmail, _id: { $ne: id } });
+  if (existingUser) {
+    throw new AppError('Email already exists', HTTP_CODES.CONFLICT);
+  }
+
+  user.email = normalizedEmail;
+  await user.save();
   return user;
 }
