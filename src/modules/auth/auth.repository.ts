@@ -1,13 +1,15 @@
 import { User } from "../users/users.model";
+import { AuthUser } from "./types/auth.types";
 
-export const validateUserCredentialsRepo = async (email: string,  password: string) => {
+export const authenticateUserRepo = async (email: string,  password: string): Promise<AuthUser | null> => {
     const user = await User.findOne({email, deleted: false}).select('+password');
 
-    if (!user) return null;
+    if (!user || !(await user.comparePassword(password))) return null
+    // if (!user) return null;
 
-    const isMatch = await user.comparePassword(password);
+    // const isMatch = await user.comparePassword(password);
 
-    if (!isMatch) return null;
+    // if (!isMatch) return null;
 
-    return { id: user._id, role: user.role };
+    return { id: user._id.toString(), role: user.role };
 }
