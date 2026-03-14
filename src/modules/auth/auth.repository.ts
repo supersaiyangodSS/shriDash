@@ -5,11 +5,5 @@ export const authenticateUserRepo = async (email: string,  password: string): Pr
     const user = await User.findOne({email, deleted: false}).select('+password');
 
     if (!user || !(await user.comparePassword(password))) return null
-    // if (!user) return null;
-
-    // const isMatch = await user.comparePassword(password);
-
-    // if (!isMatch) return null;
-
     return { id: user._id.toString(), role: user.role };
 }

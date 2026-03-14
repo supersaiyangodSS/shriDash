@@ -1,7 +1,8 @@
 import { Router } from "express";
 import { loginController, logoutController } from "./auth.controller";
 import { validate } from "@/middleware/validate.middleware";
-import { LoginValidator } from "./auth.validator";
+import { loginSchema } from "./auth.validator";
+import { authMiddleware } from "@/middleware/auth.middleware";
 
 const router = Router();
 
@@ -36,7 +37,7 @@ const router = Router();
  *             401:
  *                 description: Invalid credentials
  */
-router.post('/login', validate(LoginValidator), loginController);
+router.post('/login', validate(loginSchema), loginController);
 /**
  * @swagger
  * /auth/logout:
@@ -48,6 +49,6 @@ router.post('/login', validate(LoginValidator), loginController);
  *             200:
  *                 description: logout successful
  */
-router.post('/logout', logoutController);
+router.post('/logout', authMiddleware, logoutController);
 
 export default router;
