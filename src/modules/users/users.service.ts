@@ -2,7 +2,7 @@ import { AppError } from "@/errors/AppError";
 import { HTTP_CODES } from "@/constants/httpCodes";
 import { CreateUserDTO } from "@/modules/users/dto/createUser.dto";
 import * as userRepository from "@/modules/users/users.repository";
-import { UpdateUserDTO } from "./dto/UpdateUser.dto";
+import { UpdateUserDTO } from "./dto/updateUser.dto";
 
 export const createUser = async (data: CreateUserDTO) => {
   const existing = await userRepository.findByEmailorUsernameRepo(

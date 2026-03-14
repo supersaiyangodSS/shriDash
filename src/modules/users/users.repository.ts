@@ -2,7 +2,7 @@ import { AppError } from "@/errors/AppError";
 import { CreateUserDTO } from "./dto/createUser.dto";
 import { User } from "./users.model";
 import { HTTP_CODES } from "@/constants/httpCodes";
-import { UpdateUserDTO } from "./dto/UpdateUser.dto";
+import { UpdateUserDTO } from "./dto/updateUser.dto";
 
 export const findByIdRepo = async (id: string) => {
   const user = await User.findById(id).lean();
