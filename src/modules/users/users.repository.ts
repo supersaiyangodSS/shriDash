@@ -85,12 +85,18 @@ export const findUserByUsernameRepo = async (username: string) => {
 
 export const updateUserRepo = async (id: string, data: UpdateUserDTO) => {
   const user = await User.findById(id);
-
   if(!user) return null;
 
-  if(data.username && data.username !== user.username) {
-    const exists = await User.exists({ username: data.username, _id: { $ne: id } });
+
+  if(data.username) {
+    const normlizedUsername  = data.username.trim().toLowerCase();
+
+    if (user.username === normlizedUsername) {
+      throw new AppError('Username must be different from current username', HTTP_CODES.CONFLICT);
+    }
+    const exists = await User.exists({ username: normlizedUsername, _id: { $ne: id } });
     if (exists) throw new AppError('Username already exists', HTTP_CODES.CONFLICT);
+    user.username = normlizedUsername;
   }
 
   Object.assign(user, data);
