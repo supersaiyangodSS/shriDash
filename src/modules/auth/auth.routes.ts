@@ -48,6 +48,8 @@ router.post('/login', validate(loginSchema), loginController);
  *        responses:
  *             200:
  *                 description: logout successful
+ *             401:
+ *                 description: token missing
  */
 router.post('/logout', authMiddleware, logoutController);
 

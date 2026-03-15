@@ -14,7 +14,7 @@ export const createUserController = async (
     try {
         const payload = req.body;
         const user = await userService.createUser(payload);
-        successResponse(res, HTTP_CODES.OK, 'User created', user);
+        successResponse(res, HTTP_CODES.CREATED, 'User created', user);
     } catch (error) {
         next(error);
     }
