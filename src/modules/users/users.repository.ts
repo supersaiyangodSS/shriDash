@@ -27,7 +27,7 @@ export const findByEmailorUsernameRepo = async (
 
 export const createUserRepo = async (data: CreateUserDTO) => {
   const user = await User.create(data);
-  const { password, __v, ...safeUser } = user.toObject();
+  const { password, token, __v, ...safeUser } = user.toObject();
   return safeUser;
 };
 
@@ -143,4 +143,12 @@ export const updateUserEmailRepo = async (id: string, email: string) => {
   user.email = normalizedEmail;
   await user.save();
   return user;
+}
+
+export const findByTokenRepo = (token: string) => {
+  return User.findOne({ token }).select("+token");
+}
+
+export const saveUserRepo = (user : any) => { //FIXME: user: any
+  return user.save();
 }

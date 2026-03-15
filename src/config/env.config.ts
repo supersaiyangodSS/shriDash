@@ -5,7 +5,9 @@ const envSchema = z.object({
     MONGO_URI: z.string().min(1),
     NO_DB: z.string(),
     JWT_SECRET: z.string(),
-    NODE_ENV: z.string()
+    NODE_ENV: z.string(),
+    SERVER_EMAIL: z.string(),
+    SERVER_EMAIL_SECRET: z.string()
 });
 
 export const env = envSchema.parse(process.env);

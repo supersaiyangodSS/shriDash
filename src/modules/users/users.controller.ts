@@ -5,6 +5,7 @@ import { HTTP_CODES } from "@/constants/httpCodes";
 import { successResponse } from "@/utils/response";
 import { AppError } from "@/errors/AppError";
 import { ROLES } from "@/constants/roles";
+import { verifyEmail } from "@/modules/users/users.service";
 
 export const createUserController = async (
     req: Request,
@@ -126,6 +127,16 @@ export const updateUserEmailController = async (req: Request, res: Response, nex
         }
         const result = await userService.updateUserEmail(id, email);
         successResponse(res, HTTP_CODES.OK, 'User email updated successfully', result);
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const verifyEmailController = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const token = req.params.token;
+        await verifyEmail(token as string);
+        successResponse(res, HTTP_CODES.OK, 'Email verification successful');
     } catch (error) {
         next(error);
     }
