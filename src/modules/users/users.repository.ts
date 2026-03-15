@@ -27,7 +27,8 @@ export const findByEmailorUsernameRepo = async (
 
 export const createUserRepo = async (data: CreateUserDTO) => {
   const user = await User.create(data);
-  return user.toObject();
+  const { password, __v, ...safeUser } = user.toObject();
+  return safeUser;
 };
 
 export const getUsersRepo = async (limit: number, skip: number) => {
