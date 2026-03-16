@@ -13,7 +13,7 @@ export interface IUser {
   isTokenUsed: boolean;
   deleted: boolean;
   deletedAt?: Date | null;
-  emailVerificationExpires: string | null;
+  emailVerificationExpires: Date | null;
 }
 
 export interface IUserMethods {
