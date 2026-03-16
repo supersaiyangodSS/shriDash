@@ -1,8 +1,7 @@
 import { AppError } from "@/errors/AppError";
-import { CreateUserDTO } from "./dto/createUser.dto";
 import { User } from "./users.model";
 import { HTTP_CODES } from "@/constants/httpCodes";
-import { UpdateUserDTO } from "./dto/updateUser.dto";
+import { CreateUserDto, UpdateUserDto } from "./users.validator";
 
 export const findByIdRepo = async (id: string) => {
   const user = await User.findById(id).lean();
@@ -25,7 +24,7 @@ export const findByEmailorUsernameRepo = async (
   }).lean();
 };
 
-export const createUserRepo = async (data: CreateUserDTO) => {
+export const createUserRepo = async (data: CreateUserDto) => {
   const user = await User.create(data);
   const { password, token, __v, ...safeUser } = user.toObject();
   return safeUser;
@@ -84,7 +83,7 @@ export const findUserByUsernameRepo = async (username: string) => {
   return user;
 }
 
-export const updateUserRepo = async (id: string, data: UpdateUserDTO) => {
+export const updateUserRepo = async (id: string, data: UpdateUserDto) => {
   const user = await User.findById(id);
   if(!user) return null;
 
@@ -100,10 +99,12 @@ export const updateUserRepo = async (id: string, data: UpdateUserDTO) => {
     user.username = normlizedUsername;
   }
 
-  Object.assign(user, data);
+  const { username, ...rest } = data
+
+  Object.assign(user, rest);
 
   await user.save();
-  return user.toObject();
+  return user.toObject({ versionKey: false });
 }
 
 export const updateUserPassRepo = async (id: string, oldPassword: string, newPassword: string) => {

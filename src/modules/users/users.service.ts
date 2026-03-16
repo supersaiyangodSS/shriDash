@@ -1,12 +1,11 @@
 import { AppError } from "@/errors/AppError";
 import { HTTP_CODES } from "@/constants/httpCodes";
-import { CreateUserDTO } from "@/modules/users/dto/createUser.dto";
 import * as userRepository from "@/modules/users/users.repository";
-import { UpdateUserDTO } from "./dto/updateUser.dto";
 import { sendEmail } from "@/utils/nodemailer";
 import { generateVerificationToken } from "@/utils/generateToken";
+import { CreateUserDto, UpdateUserDto } from "./users.validator";
 
-export const createUser = async (data: CreateUserDTO) => {
+export const createUser = async (data: CreateUserDto) => {
   const existing = await userRepository.findByEmailorUsernameRepo(
     data.email,
     data.username,
@@ -19,8 +18,8 @@ export const createUser = async (data: CreateUserDTO) => {
   }
 
   const token = generateVerificationToken();
-  data.token = token;
-  const user = await userRepository.createUserRepo(data);
+  const userData = { ...data, token };
+  const user = await userRepository.createUserRepo(userData);
   const verifyUrl = `http://localhost:4001/api/user/verify-email/${token}`;
 
   await sendEmail(data.email, 'Verify Email', `<a href="${verifyUrl}">Verify your email</a>`);
@@ -59,7 +58,7 @@ export const restoreDeletedUser = async (id: string) => {
   return await userRepository.restoreDeleteUserRepo(id);
 };
 
-export const updateUser = async (id: string, payload: UpdateUserDTO) => {
+export const updateUser = async (id: string, payload: UpdateUserDto) => {
   const user = await userRepository.findByIdRepo(id);
   if (!user) throw new AppError("User not found", HTTP_CODES.NOT_FOUND);
   const updatedUser = await userRepository.updateUserRepo(id, payload);
