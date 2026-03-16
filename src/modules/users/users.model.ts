@@ -27,6 +27,12 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>( //explain
       required: true,
       index: true,
     },
+    pendingEmail: {
+      type: String,
+      unique: true,
+      lowercase: true,
+      trim: true
+    },
     username: {
       type: String,
       unique: true,
@@ -52,6 +58,10 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>( //explain
     token: {
       type: String,
       select: false,
+    },
+    emailVerificationExpires: {
+      type: Date,
+      default: null,
     },
     isTokenUsed: {
       type: Boolean,
