@@ -134,8 +134,8 @@ export const updateUserEmailController = async (req: Request, res: Response, nex
 
 export const verifyEmailController = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const token = req.params.token;
-        await verifyEmail(token as string);
+        const token = req.params.token as string;
+        await verifyEmail(token);
         successResponse(res, HTTP_CODES.OK, 'Email verification successful');
     } catch (error) {
         next(error);
