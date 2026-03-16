@@ -2,6 +2,7 @@ import { AppError } from "@/errors/AppError";
 import { User } from "./users.model";
 import { HTTP_CODES } from "@/constants/httpCodes";
 import { CreateUserDto, UpdateUserDto } from "./users.validator";
+import { UserDocument } from "./user.types";
 
 export const findByIdRepo = async (id: string) => {
   const user = await User.findById(id).lean();
@@ -126,6 +127,10 @@ export const updateUserPassRepo = async (id: string, oldPassword: string, newPas
   return safeUser;
 }
 
+export const emailExists = async (email: string, excludeId: string) => {
+  return await User.exists({ email, _id : { $ne: excludeId } });
+}
+
 export const updateUserEmailRepo = async (id: string, email: string) => {
   const user = await User.findById(id);
   if (!user) return null;
@@ -150,6 +155,6 @@ export const findByTokenRepo = (token: string) => {
   return User.findOne({ token }).select("+token");
 }
 
-export const saveUserRepo = (user : any) => { //FIXME: user: any
+export const saveUserRepo = (user : UserDocument): Promise<UserDocument> => { //FIXME: user: any
   return user.save();
 }

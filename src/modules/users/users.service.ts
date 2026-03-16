@@ -23,7 +23,6 @@ export const createUser = async (data: CreateUserDto) => {
   const verifyUrl = `http://localhost:4001/api/user/verify-email/${token}`;
 
   await sendEmail(data.email, 'Verify Email', `<a href="${verifyUrl}">Verify your email</a>`);
-
   return user;
 };
 
@@ -32,7 +31,6 @@ export const getUsers = async (page: number, limit: number) => {
   const users = await userRepository.getUsersRepo(limit, skip);
   const total = await userRepository.countUsersRepo();
   const pages = Math.ceil(total / limit);
-
   return { users, total, page, pages };
 };
 
@@ -72,21 +70,25 @@ export const updateUserPass = async (id: string, oldPassword: string, newPasswor
 }
 
 export const updateUserEmail = async (id: string, email: string) => {
-  const user = await userRepository.updateUserEmailRepo(id, email);
+  const normalizedEmail = email
+  const user = await userRepository.findByIdRepo(id);
   if (!user) throw new AppError("User not found", HTTP_CODES.NOT_FOUND);
-  return user;
+
+  if(user.email === normalizedEmail) {
+    throw new AppError("Email must be different from current email", HTTP_CODES.CONFLICT);
+  }
+  const existingUser = await userRepository.emailExists(normalizedEmail, id);
+  if (existingUser) throw new AppError("Email already exists", HTTP_CODES.CONFLICT);
+
+  const updatedUser = await userRepository.updateUserEmailRepo(id, normalizedEmail);
+  return updatedUser;
 }
 
 export const verifyEmail = async (token: string) => {
   const user = await userRepository.findByTokenRepo(token);
+  if (!user) throw new AppError("Invalid token", HTTP_CODES.BAD_REQUEST);
 
-  if (!user || user.isTokenUsed) {
-    throw new AppError('Invalid token', HTTP_CODES.BAD_REQUEST);
-  }
-
-  user.verified = true;
-  user.isTokenUsed = true;
-  user.token = undefined;
-
-  await userRepository.saveUserRepo(user);
-};
+  user.verified = true,
+  user.token = undefined,
+  user.isTokenUsed = true
+}
