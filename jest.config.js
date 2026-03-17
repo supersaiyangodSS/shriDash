@@ -9,7 +9,7 @@ module.exports = {
     ...tsJestTransformCfg,
   },
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1'
+    "^@/(.*)$": "<rootDir>/src/$1",
   },
-  setupFiles: ["<rootDir>/jest.setup.ts"]
+  setupFiles: ["<rootDir>/jest.setup.ts"],
 };

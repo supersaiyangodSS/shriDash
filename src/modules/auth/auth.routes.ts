@@ -37,7 +37,7 @@ const router = Router();
  *             401:
  *                 description: Invalid credentials
  */
-router.post('/login', validate(loginSchema), loginController);
+router.post("/login", validate(loginSchema), loginController);
 /**
  * @swagger
  * /auth/logout:
@@ -51,6 +51,6 @@ router.post('/login', validate(loginSchema), loginController);
  *             401:
  *                 description: token missing
  */
-router.post('/logout', authMiddleware, logoutController);
+router.post("/logout", authMiddleware, logoutController);
 
 export default router;

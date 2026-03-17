@@ -1,4 +1,4 @@
 export type AuthUser = {
-    id: string,
-    role: string
-}
+  id: string;
+  role: string;
+};

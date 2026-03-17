@@ -22,18 +22,4 @@ async function server() {
   }
 }
 
-async function startWithoutDB() {
-  try {
-    await startServer();
-    logger.info("Server running without DB");
-  } catch (error) {
-    logger.error(error);
-    process.exit(1);
-  }
-}
-
-if (env.NO_DB === "true") {
-  startWithoutDB();
-} else {
-  server();
-}
+server();

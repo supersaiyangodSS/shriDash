@@ -1,9 +1,9 @@
-import { HydratedDocument, Schema, model, Model} from "mongoose";
+import { HydratedDocument, Schema, model, Model } from "mongoose";
 import bcrypt from "bcrypt";
 import { ROLES } from "@/constants/roles";
 import { IUser, IUserMethods } from "./user.types";
 
-export type UserDocument =HydratedDocument<IUser, IUserMethods>; //explain
+export type UserDocument = HydratedDocument<IUser, IUserMethods>; //explain
 
 type UserModel = Model<IUser, {}, IUserMethods>; //explain
 
@@ -31,7 +31,7 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>( //explain
       type: String,
       unique: true,
       lowercase: true,
-      trim: true
+      trim: true,
     },
     username: {
       type: String,
@@ -90,7 +90,7 @@ userSchema.pre("save", async function () {
 });
 
 userSchema.methods.comparePassword = async function (password: string) {
-     return bcrypt.compare(password, this.password);
-}
+  return bcrypt.compare(password, this.password);
+};
 
 export const User = model<IUser, UserModel>("User", userSchema); // explain

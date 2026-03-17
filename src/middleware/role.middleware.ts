@@ -7,11 +7,15 @@ export const allowRoles =
     const user = (req as any).user;
 
     if (!user) {
-      return res.status(HTTP_CODES.UNAUTHORIZED).json({ success: false, message: "Unauthorized" });
+      return res
+        .status(HTTP_CODES.UNAUTHORIZED)
+        .json({ success: false, message: "Unauthorized" });
     }
 
     if (!roles.includes(user.role)) {
-      return res.status(HTTP_CODES.FORBIDDEN).json({ success: false, message: "Forbidden" });
+      return res
+        .status(HTTP_CODES.FORBIDDEN)
+        .json({ success: false, message: "Forbidden" });
     }
 
     next();

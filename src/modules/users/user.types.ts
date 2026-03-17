@@ -4,7 +4,7 @@ export interface IUser {
   firstName: string;
   lastName: string;
   email: string;
-  pendingEmail?: string | null,
+  pendingEmail?: string | null;
   username: string;
   password: string;
   role: string;
@@ -17,7 +17,7 @@ export interface IUser {
 }
 
 export interface IUserMethods {
-  comparePassword(password: string) : Promise<boolean>;
+  comparePassword(password: string): Promise<boolean>;
 }
 
 export type UserDocument = HydratedDocument<IUser, IUserMethods>;
