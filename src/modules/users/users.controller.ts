@@ -6,6 +6,7 @@ import { successResponse } from "@/utils/response";
 import { AppError } from "@/errors/AppError";
 import { ROLES } from "@/constants/roles";
 import { verifyEmail } from "@/modules/users/users.service";
+import { MESSAGE } from "@/constants/messages";
 
 export const createUserController = async (
     req: Request,
@@ -15,7 +16,7 @@ export const createUserController = async (
     try {
         const payload = req.body;
         const user = await userService.createUser(payload);
-        successResponse(res, HTTP_CODES.CREATED, 'User created', user);
+        successResponse(res, HTTP_CODES.CREATED, MESSAGE.USER.USER_CREATED, user);
     } catch (error) {
         next(error);
     }
@@ -31,7 +32,7 @@ export const getUsersController = async (
         const limit = Number(req.query.limit) || 10;
 
         const result = await userService.getUsers(page, limit);
-        successResponse(res, HTTP_CODES.OK, 'User fetched:', result)
+        successResponse(res, HTTP_CODES.OK, MESSAGE.USER.USER_FETCHED, result)
     } catch (error: any) {
         next(error);
     }
@@ -45,10 +46,10 @@ export const softDeleteUserController = async (
     try {
         const userId = req.params.id as string;
         if (!mongoose.Types.ObjectId.isValid(userId)) {
-            throw new AppError('Invalid user id', HTTP_CODES.BAD_REQUEST);
+            throw new AppError(MESSAGE.USER.INVALID_USER_ID, HTTP_CODES.BAD_REQUEST);
         }
         await userService.softDeleteUser(userId);
-        successResponse(res, HTTP_CODES.OK, 'User deleted')
+        successResponse(res, HTTP_CODES.OK, MESSAGE.USER.USER_DELETED)
     } catch (error: any) {
         next(error);
     }
@@ -58,10 +59,10 @@ export const forceDeleteUserController = async (req: Request, res: Response, nex
     try {
         const userId = req.params.id as string;
         if (!mongoose.Types.ObjectId.isValid(userId)) {
-            throw new AppError('Invalid user id', HTTP_CODES.BAD_REQUEST);
+            throw new AppError(MESSAGE.USER.INVALID_USER_ID, HTTP_CODES.BAD_REQUEST);
         }
         await userService.forceDeleteUser(userId);
-        successResponse(res, HTTP_CODES.OK, 'User deleted')
+        successResponse(res, HTTP_CODES.OK, MESSAGE.USER.USER_DELETED)
     } catch (error) {
         next(error);
     }
@@ -71,10 +72,10 @@ export const restoreDeletedUserController = async (req: Request, res: Response, 
         try {
             const userId = req.params.id as string;
             if (!mongoose.Types.ObjectId.isValid(userId)) {
-            throw new AppError('Invalid user id', HTTP_CODES.BAD_REQUEST);
+            throw new AppError(MESSAGE.USER.INVALID_USER_ID, HTTP_CODES.BAD_REQUEST);
             }
             const user = await userService.restoreDeletedUser(userId);
-        successResponse(res, HTTP_CODES.OK, 'User restored', user);
+        successResponse(res, HTTP_CODES.OK, MESSAGE.USER.USER_RESTORED, user);
         } catch (error) {
             next(error);
         }
@@ -84,11 +85,12 @@ export const updateUserController = async (req: Request, res: Response, next: Ne
     try {
         const payload = req.body;
         const userId = req.params.id as string;
+        const actorRole = (req as any).user.role;
         if (!mongoose.Types.ObjectId.isValid(userId)) {
-            throw new AppError('Invalid user id', HTTP_CODES.BAD_REQUEST);
+            throw new AppError(MESSAGE.USER.INVALID_USER_ID, HTTP_CODES.BAD_REQUEST);
         }
-        const user = await userService.updateUser(userId, payload);
-        successResponse(res, HTTP_CODES.OK, 'User updated', user);
+        const user = await userService.updateUser(userId, payload, actorRole);
+        successResponse(res, HTTP_CODES.OK, MESSAGE.USER.USER_UPDATED, user);
     } catch (error) {
         next(error);
     }
@@ -99,16 +101,17 @@ export const updateUserPasswordController = async (req: Request, res: Response, 
         const id = req.params.id as string;
         const oldPassword = req.body.oldPassword;
         const newPassword = req.body.newPassword;
+        const actorRole = req.body.role;
 
         if ((req as any).user.role === ROLES.USER && (req as any).user.id !== id)
-            throw new AppError("You can only set your own password", HTTP_CODES.FORBIDDEN);
+            throw new AppError(MESSAGE.USER.YOU_CAN_ONLY_SET_YOUR_OWN_PASSWORD, HTTP_CODES.FORBIDDEN);
 
         if (!mongoose.Types.ObjectId.isValid(id))
-            throw new AppError('Invalid user id', HTTP_CODES.BAD_REQUEST);
+            throw new AppError(MESSAGE.USER.INVALID_USER_ID, HTTP_CODES.BAD_REQUEST);
 
-        const result = await userService.updateUserPass(id, oldPassword, newPassword);
+        const result = await userService.updateUserPass(id, oldPassword, newPassword, actorRole);
 
-        successResponse(res, HTTP_CODES.OK, 'User password reset successful', result);
+        successResponse(res, HTTP_CODES.OK, MESSAGE.USER.USER_PASSWORD_RESET_SUCCESSFUL, result);
     } catch (error) {
         next(error);
     }
@@ -118,15 +121,16 @@ export const updateUserEmailController = async (req: Request, res: Response, nex
     try {
         const id = req.params.id as string;
         const email = req.body.email;
+        const actorRole = req.body.role;
 
         if ((req as any).user.role === ROLES.USER && (req as any).user.id !== id) {
-            throw new AppError('you can only set your own email', HTTP_CODES.FORBIDDEN);
+            throw new AppError(MESSAGE.USER.YOU_CAN_ONLY_SET_YOUR_OWN_EMAIL, HTTP_CODES.FORBIDDEN);
         }
         if(!mongoose.Types.ObjectId.isValid(id)) {
-            throw new AppError('Invalid user id', HTTP_CODES.BAD_REQUEST);
+            throw new AppError(MESSAGE.USER.INVALID_USER_ID, HTTP_CODES.BAD_REQUEST);
         }
-        const result = await userService.updateUserEmail(id, email);
-        successResponse(res, HTTP_CODES.OK, 'User email updated successfully', result);
+        const result = await userService.updateUserEmail(id, email, actorRole);
+        successResponse(res, HTTP_CODES.OK, MESSAGE.USER.USER_EMAIL_UPDATED_SUCCESSFUL, result);
     } catch (error) {
         next(error);
     }

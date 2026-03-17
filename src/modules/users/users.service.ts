@@ -4,6 +4,8 @@ import { sendEmail } from "@/utils/nodemailer";
 import { generateVerificationToken } from "@/utils/generateToken";
 import { CreateUserDto, UpdateUserDto } from "./users.validator";
 import { User } from "./users.model";
+import { MESSAGE } from "@/constants/messages";
+import { ROLES } from "@/constants/roles";
 
 export const createUser = async (data: CreateUserDto) => {
   const existing = await User.findOne({
@@ -14,19 +16,19 @@ export const createUser = async (data: CreateUserDto) => {
   })
   if (existing) {
     if (existing.email === data.email) {
-      throw new AppError("Email already exists", HTTP_CODES.CONFLICT);
+      throw new AppError(MESSAGE.USER.EMAIL_ALREADY_EXISTS, HTTP_CODES.CONFLICT);
     }
-    throw new AppError("Username already exists", HTTP_CODES.CONFLICT);
+    throw new AppError(MESSAGE.USER.USERNAME_ALREADY_EXISTS, HTTP_CODES.CONFLICT);
   }
 
   const token = generateVerificationToken();
   const userData = { ...data, token };
   const user = await User.create(userData);
 
-  const verifyUrl = `http://localhost:4001/api/user/verify-email/${token}`;
+  const verifyUrl = `${MESSAGE.URL.VERIFY_EMAIL}${token}`;
 
   await sendEmail(data.email, 'Verify Email', `<a href="${verifyUrl}">Verify your email</a>`);
-  const { password, token: _, ...safeUser } = user.toObject();
+  const { password, token: _, ...safeUser } = user.toObject({ versionKey: false });
   return safeUser;
 };
 
@@ -54,13 +56,13 @@ export const softDeleteUser = async (id: string) => {
     },
     { new: true },
   ).lean();
-  if (!user) throw new AppError("User not found or already deleted" , HTTP_CODES.NOT_FOUND);
+  if (!user) throw new AppError(MESSAGE.USER.USER_NOT_FOUND_OR_ALREADY_DELETED, HTTP_CODES.NOT_FOUND);
   return user;
 };
 
 export const forceDeleteUser = async (id: string) => {
   const user = await User.findByIdAndDelete(id).lean();
-  if (!user) throw new AppError("User not found", HTTP_CODES.NOT_FOUND);
+  if (!user) throw new AppError(MESSAGE.USER.USER_NOT_FOUND, HTTP_CODES.NOT_FOUND);
   return user;
 };
 
@@ -70,73 +72,88 @@ export const restoreDeletedUser = async (id: string) => {
     { $set: { deleted: false }, $unset: { deletedAt: "" } },
     { new: true }
   ).lean();
-  if (!user) throw new AppError("User not found or not deleted", HTTP_CODES.NOT_FOUND);
+  if (!user) throw new AppError(MESSAGE.USER.USER_NOT_FOUND_OR_NOT_DELETED, HTTP_CODES.NOT_FOUND);
   return user;
 };
 
-export const updateUser = async (id: string, payload: UpdateUserDto) => {
+export const updateUser = async (
+  id: string,
+  payload: UpdateUserDto,
+  actorRole: string,
+) => {
 
   const user = await User.findById(id);
 
   if (!user) {
-    throw new AppError("User not found", HTTP_CODES.NOT_FOUND);
+    throw new AppError(MESSAGE.USER.USER_NOT_FOUND, HTTP_CODES.NOT_FOUND);
+  }
+
+  if (user.deleted && actorRole !== ROLES.SUPERADMIN) {
+    throw new AppError(MESSAGE.USER.CANNOT_UPDATE_A_DELETED_USER, HTTP_CODES.BAD_REQUEST);
   }
 
   if (payload.username) {
-    const normlizedUsername = payload.username.trim().toLowerCase();
+    const normalizedUsername = payload.username.trim().toLowerCase();
 
-    if (user.username === normlizedUsername) {
-      throw new AppError("Username must be different", HTTP_CODES.CONFLICT);
+    if (user.username === normalizedUsername) {
+      throw new AppError(MESSAGE.USER.USERNAME_MUST_BE_DIFFERENT, HTTP_CODES.CONFLICT);
     }
 
     const exists = await User.exists({
-      username: normlizedUsername,
+      username: normalizedUsername,
       _id: { $ne: id }
     });
 
     if (exists) {
-      throw new AppError("Username already exists", HTTP_CODES.CONFLICT);
+      throw new AppError(MESSAGE.USER.USERNAME_ALREADY_EXISTS, HTTP_CODES.CONFLICT);
     }
-    user.username = normlizedUsername;
+    user.username = normalizedUsername;
   }
 
   const { username, ...rest } = payload;
   Object.assign(user, rest);
   await user.save()
   return user.toObject({ versionKey: false });
-  // const { password, ...safeUser } = user.toObject();
-  // return safeUser;
 }
 
-export const updateUserPass = async (id: string, oldPassword: string, newPassword: string) => {
-  const user = await User.findById(id).select("+password");
+export const updateUserPass = async (id: string, oldPassword: string, newPassword: string, actorRole: string) => {
+  const user = await User.findOne({ _id: id, deleted: false }).select("+password");
 
-  if (!user) throw new AppError("User not found", HTTP_CODES.NOT_FOUND);
+  if (!user) throw new AppError(MESSAGE.USER.USER_NOT_FOUND, HTTP_CODES.NOT_FOUND);
+
+  if (user.deleted && actorRole !== ROLES.SUPERADMIN) {
+    throw new AppError(MESSAGE.USER.CANNOT_UPDATE_PASSWORD_OF_DELETED_USER, HTTP_CODES.BAD_REQUEST);
+  }
 
   const isMatch = await user.comparePassword(oldPassword);
 
-  if (!isMatch) throw new AppError("Invalid current password", HTTP_CODES.BAD_REQUEST);
+  if (!isMatch) throw new AppError(MESSAGE.USER.INVALID_CURRENT_PASSWORD, HTTP_CODES.BAD_REQUEST);
 
   const isSame = await user.comparePassword(newPassword);
-  if (isSame) throw new AppError("New password cannot be same as old password", HTTP_CODES.BAD_REQUEST);
+  if (isSame) throw new AppError(MESSAGE.USER.NEW_PASSWORD_CANNOT_BE_SAME_AS_OLD_PASSWORD, HTTP_CODES.BAD_REQUEST);
   user.password = newPassword;
 
   await user.save();
-  const userObj = user.toObject();
+  const userObj = user.toObject({ versionKey: false });
   const { password, ...safeUser } = userObj;
   return safeUser;
 }
 
-export const updateUserEmail = async (id: string, email: string) => {
+export const updateUserEmail = async (id: string, email: string, actorRole: string) => {
   const normalizedEmail = email;
-  const user = await User.findById(id);
-  if (!user) throw new AppError("User not found", HTTP_CODES.NOT_FOUND);
+  const user = await User.findOne({ _id: id, deleted: false});
+  if (!user) throw new AppError(MESSAGE.USER.USER_NOT_FOUND, HTTP_CODES.NOT_FOUND);
+
+
+  if (user.deleted && actorRole !== ROLES.SUPERADMIN) {
+    throw new AppError(MESSAGE.USER.CANNOT_UPDATE_EMAIL_OF_DELETED_USER, HTTP_CODES.BAD_REQUEST);  //FIXME: test this
+  }
 
   if(user.email === normalizedEmail) {
-    throw new AppError("Email must be different from current email", HTTP_CODES.CONFLICT);
+    throw new AppError(MESSAGE.USER.EMAIL_MUST_BE_DIFFERENT_FROM_CURRENT_EMAIL, HTTP_CODES.CONFLICT);
   }
   const existingUser = await User.exists({ email: normalizedEmail, _id: { $ne: id } });
-  if (existingUser) throw new AppError("Email already exists", HTTP_CODES.CONFLICT);
+  if (existingUser) throw new AppError(MESSAGE.USER.EMAIL_ALREADY_EXISTS, HTTP_CODES.CONFLICT);
 
   user.email = normalizedEmail;
   await user.save();
@@ -144,8 +161,8 @@ export const updateUserEmail = async (id: string, email: string) => {
 }
 
 export const verifyEmail = async (token: string) => {
-  const user = await User.findOne({token}).select("+token");
-  if (!user) throw new AppError("Invalid token", HTTP_CODES.BAD_REQUEST);
+  const user = await User.findOne({token, deleted: false}).select("+token");
+  if (!user) throw new AppError(MESSAGE.AUTH.INVALID_TOKEN, HTTP_CODES.BAD_REQUEST);
 
   user.verified = true;
   user.token = undefined;

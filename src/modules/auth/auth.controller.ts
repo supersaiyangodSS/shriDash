@@ -3,6 +3,7 @@ import { loginService } from "@/modules/auth";
 import { HTTP_CODES } from "@/constants/httpCodes";
 import { successResponse } from "@/utils/response";
 import { env, cookieOptions } from "@/config";
+import { MESSAGE } from "@/constants/messages";
 
 export const loginController = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -11,7 +12,7 @@ export const loginController = async (req: Request, res: Response, next: NextFun
             ...cookieOptions,
             maxAge: 24 * 60 * 60 * 1000,
         });
-        successResponse(res, HTTP_CODES.OK, 'login successful');
+        successResponse(res, HTTP_CODES.OK, MESSAGE.AUTH.LOGIN_SUCCESS);
     } catch (error) {
         next(error)
     }
@@ -24,7 +25,7 @@ export const logoutController = async (req: Request, res: Response, next: NextFu
             secure: env.NODE_ENV === "production",
             sameSite: "strict",
         });
-        successResponse(res, HTTP_CODES.OK, 'logout successful');
+        successResponse(res, HTTP_CODES.OK, MESSAGE.AUTH.LOGOUT_SUCCESS);
     } catch (error) {
         next(error);
     }

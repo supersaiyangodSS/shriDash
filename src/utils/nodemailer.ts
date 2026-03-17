@@ -1,6 +1,7 @@
 import { env } from '@/config';
 import { createTransport } from 'nodemailer';
 import { logger } from './logger';
+import { MESSAGE } from '@/constants/messages';
 
 const transporter = createTransport({
     service: 'gmail',
@@ -20,9 +21,9 @@ export async function sendEmail(email: string, subject: string, mailBody: string
     try {
         await transporter.sendMail(options);
         await transporter.verify();
-        logger.info('Email sent successfully');
+        logger.info(MESSAGE.USER.EMAIL_SENT_SUCCESS);
     }
     catch (error) {
-        logger.error(error, 'error sending email');
+        logger.error(error, MESSAGE.USER.EMAIL_SEND_ERROR);
     }
 }
