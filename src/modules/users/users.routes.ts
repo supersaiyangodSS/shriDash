@@ -12,6 +12,7 @@ import {
 import { authMiddleware } from "@/middleware/auth.middleware";
 import { allowRoles } from "@/middleware/role.middleware";
 import { ROLES } from "@/constants/roles";
+import { auditMiddleware } from "@/middleware/audit.middleware";
 
 const router = Router();
 
@@ -61,7 +62,12 @@ const router = Router();
  *             409:
  *                 description: conflict
  */
-router.post("/", validate(CreateUserSchema), controller.createUserController);
+router.post(
+  "/",
+  validate(CreateUserSchema),
+  auditMiddleware("POST", "USER"),
+  controller.createUserController,
+);
 /**
  * @swagger
  * /user:
@@ -83,6 +89,7 @@ router.get(
   "/",
   authMiddleware,
   allowRoles(ROLES.SUPERADMIN, ROLES.ADMIN),
+  auditMiddleware("GET", "USER"),
   controller.getUsersController,
 );
 /**
@@ -117,6 +124,7 @@ router.delete(
   "/:id",
   validate(UserIdSchema, "params"),
   authMiddleware,
+  auditMiddleware("DELETE", "USER"),
   allowRoles(ROLES.SUPERADMIN, ROLES.ADMIN),
   controller.softDeleteUserController,
 );
@@ -156,6 +164,7 @@ router.delete(
   "/:id/force",
   validate(UserIdSchema, "params"),
   authMiddleware,
+  auditMiddleware("DELETE", "USER"),
   allowRoles(ROLES.SUPERADMIN),
   controller.forceDeleteUserController,
 );
@@ -189,6 +198,7 @@ router.patch(
   "/:id/restore",
   validate(UserIdSchema, "params"),
   authMiddleware,
+  auditMiddleware("PATCH", "USER"),
   allowRoles(ROLES.SUPERADMIN, ROLES.ADMIN),
   controller.restoreDeletedUserController,
 );
@@ -222,6 +232,7 @@ router.patch(
   "/:id",
   validate(UpdateUserSchema),
   authMiddleware,
+  auditMiddleware("PATCH", "USER"),
   allowRoles(ROLES.SUPERADMIN, ROLES.ADMIN, ROLES.USER),
   controller.updateUserController,
 );
@@ -272,6 +283,7 @@ router.patch(
   "/:id/reset-password",
   validate(UpdateUserPassSchema),
   authMiddleware,
+  auditMiddleware("PATCH", "USER"),
   allowRoles(ROLES.SUPERADMIN, ROLES.ADMIN, ROLES.USER),
   controller.updateUserPasswordController,
 );
@@ -321,6 +333,7 @@ router.patch(
   "/:id/email",
   validate(UserEmailSchema),
   authMiddleware,
+  auditMiddleware("PATCH", "USER"),
   allowRoles(ROLES.SUPERADMIN, ROLES.ADMIN, ROLES.USER),
   controller.updateUserEmailController,
 );
@@ -349,6 +362,7 @@ router.patch(
 router.get(
   "/verify-email/:token",
   validate(TokenSchema, "params"),
+  auditMiddleware("GET", "USER"),
   controller.verifyEmailController,
 );
 

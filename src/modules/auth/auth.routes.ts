@@ -3,6 +3,7 @@ import { loginController, logoutController } from "./auth.controller";
 import { validate } from "@/middleware/validate.middleware";
 import { loginSchema } from "./auth.validator";
 import { authMiddleware } from "@/middleware/auth.middleware";
+import { auditMiddleware } from "@/middleware/audit.middleware";
 
 const router = Router();
 
@@ -37,7 +38,12 @@ const router = Router();
  *             401:
  *                 description: Invalid credentials
  */
-router.post("/login", validate(loginSchema), loginController);
+router.post(
+  "/login",
+  validate(loginSchema),
+  auditMiddleware("POST", "AUTH"),
+  loginController,
+);
 /**
  * @swagger
  * /auth/logout:
@@ -51,6 +57,11 @@ router.post("/login", validate(loginSchema), loginController);
  *             401:
  *                 description: token missing
  */
-router.post("/logout", authMiddleware, logoutController);
+router.post(
+  "/logout",
+  authMiddleware,
+  auditMiddleware("POST", "AUTH"),
+  logoutController,
+);
 
 export default router;
