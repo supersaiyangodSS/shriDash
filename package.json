@@ -4,6 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
+    "main": "node dist/server.js",
     "server": "ts-node src/server.ts",
     "dev": "nodemon",
     "pino": "pino-pretty",
