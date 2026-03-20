@@ -1,5 +1,3 @@
-import { HydratedDocument } from "mongoose";
-
 export interface IUser {
   firstName: string;
   lastName: string;
@@ -19,5 +17,3 @@ export interface IUser {
 export interface IUserMethods {
   comparePassword(password: string): Promise<boolean>;
 }
-
-export type UserDocument = HydratedDocument<IUser, IUserMethods>;
