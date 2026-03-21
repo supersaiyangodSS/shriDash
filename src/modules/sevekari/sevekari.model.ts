@@ -7,6 +7,11 @@ const SevekariSchema = new Schema<ISevekari>({
     required: true,
     trim: true,
   },
+  middleName: {
+    type: String,
+    required: true,
+    trim: true,
+  },
   lastName: {
     type: String,
     required: true,
