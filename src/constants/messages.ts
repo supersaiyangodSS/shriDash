@@ -36,6 +36,10 @@ export const MESSAGE = {
     USER_EMAIL_UPDATED_SUCCESSFUL: "User email updated successful",
     EMAIL_VERIFICATION_SUCCESSFUL: "Email verification successful",
   },
+  SEVEKARI: {
+    SEVEKARI_CREATED_SUCCESS: "Sevekari created successfully",
+    SEVEKARI_MOBILE_ALREADY_EXISTS: "Mobile already exists",
+  },
   COMMON: {
     SERVER_ERROR: "Internal server error",
   },
