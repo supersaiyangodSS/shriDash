@@ -1,8 +1,9 @@
 export interface ISevekari {
   firstName: string;
+  middleName: string;
   lastName: string;
-  mobile: number;
-  mobileAlt: number;
+  mobile: string;
+  mobileAlt: string;
   email: string;
   address: string;
   deleted: boolean;

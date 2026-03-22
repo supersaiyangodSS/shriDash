@@ -18,18 +18,17 @@ const SevekariSchema = new Schema<ISevekari>({
     trim: true,
   },
   mobile: {
-    type: Number,
+    type: String,
     required: true,
     trim: true,
+    unique: true,
   },
   mobileAlt: {
-    type: Number,
-    required: true,
+    type: String,
     trim: true,
   },
   email: {
     type: String,
-    required: true,
     trim: true,
   },
   address: {
