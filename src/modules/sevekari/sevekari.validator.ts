@@ -9,9 +9,10 @@ export const SevekariSchema = z
     mobileAlt: z
       .string()
       .regex(/^[0-9]{10}$/, "Invalid alternate mobile number")
+      .trim()
       .optional(),
-    email: z.string().email().min(1).optional(),
-    address: z.string().min(5, "Invalid Email"),
+    email: z.string().email().trim().min(1).toLowerCase().optional(),
+    address: z.string().min(5, "Invalid address").toLowerCase(),
   })
   .strict();
 
