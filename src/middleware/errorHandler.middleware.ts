@@ -18,6 +18,22 @@ export const errorHandler = (
     });
   }
 
+  if (err.code === 11000) {
+    const field = Object.keys(err.keyPattern || {})[0];
+    console.log(err.code);
+    console.log(err.keyValue);
+    return res.status(HTTP_CODES.BAD_REQUEST).json({
+      success: false,
+      message: `${field} already exists`,
+    });
+  }
+
+  if (err.name === "CastError") {
+    return res.status(HTTP_CODES.BAD_REQUEST).json({
+      success: false,
+      message: `Invalid ${err.path}`,
+    });
+  }
   res
     .status(HTTP_CODES.INTERNAL_SERVER_ERROR)
     .json({ success: false, message: "Something went wrong" });
