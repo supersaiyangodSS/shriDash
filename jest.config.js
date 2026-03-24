@@ -12,4 +12,7 @@ module.exports = {
     "^@/(.*)$": "<rootDir>/src/$1",
   },
   setupFiles: ["<rootDir>/jest.setup.ts"],
+  verbose: true,
+  clearMocks: true,
+  forceExit: true,
 };
