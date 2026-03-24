@@ -15,7 +15,11 @@ export const createSevekari = async (payload: SevekariDto) => {
       HTTP_CODES.CONFLICT,
     );
   }
-
-  const user = await Sevekari.create(payload);
+  const payloadMod = { ...payload, templeId: "69c1712aa3e5a278a6ad5f7f" }; //move temple id to env
+  const user = await Sevekari.create(payloadMod);
   return user.toObject({ versionKey: false });
+};
+
+export const getSevekari = async () => {
+  return await Sevekari.find().populate("Temple");
 };
