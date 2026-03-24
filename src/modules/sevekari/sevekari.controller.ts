@@ -2,7 +2,7 @@ import { HTTP_CODES } from "@/constants/httpCodes";
 import { MESSAGE } from "@/constants/messages";
 import { successResponse } from "@/utils/response";
 import { NextFunction, Request, Response } from "express";
-import { createSevekari } from "./sevekari.service";
+import { createSevekari, getSevekari } from "./sevekari.service";
 import { SevekariDto } from "./sevekari.validator";
 
 export const createSevekariController = async (
@@ -19,6 +19,19 @@ export const createSevekariController = async (
       MESSAGE.SEVEKARI.SEVEKARI_CREATED_SUCCESS,
       result,
     );
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getSevekariController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const result = await getSevekari();
+    successResponse(res, HTTP_CODES.OK, "Fetched sevekari", result);
   } catch (error) {
     next(error);
   }
