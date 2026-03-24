@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, Types, model } from "mongoose";
 import { ISevekari } from "./sevekari.types";
 
 const SevekariSchema = new Schema<ISevekari>({
@@ -38,6 +38,11 @@ const SevekariSchema = new Schema<ISevekari>({
   deleted: {
     type: Boolean,
     default: false,
+  },
+  templeId: {
+    type: Types.ObjectId,
+    ref: "Temple",
+    required: true,
   },
 });
 

@@ -1,3 +1,5 @@
+import { Types } from "mongoose";
+
 export interface ISevekari {
   firstName: string;
   middleName: string;
@@ -7,4 +9,5 @@ export interface ISevekari {
   email?: string;
   address: string;
   deleted: boolean;
+  templeId: Types.ObjectId | string;
 }
