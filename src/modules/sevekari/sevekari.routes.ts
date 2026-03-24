@@ -9,8 +9,14 @@ const router = Router();
 router.post(
   "/",
   validate(SevekariSchema),
-  auditMiddleware("POST", "USER"),
+  auditMiddleware("POST", "SEVEKARI"),
   controller.createSevekariController,
+);
+
+router.get(
+  "/",
+  auditMiddleware("GET", "SEVEKARI"),
+  controller.getSevekariController,
 );
 
 export default router;
