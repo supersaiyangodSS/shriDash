@@ -26,4 +26,11 @@ const options = {
   apis: ["./src/modules/**/*.ts"],
 };
 
-export const swaggerSpec = swaggerJSDoc(options);
+let swaggerSpecCache: ReturnType<typeof swaggerJSDoc> | null = null;
+
+export const getSwaggerSpec = () => {
+  if (!swaggerSpecCache) {
+    swaggerSpecCache = swaggerJSDoc(options);
+  }
+  return swaggerSpecCache;
+};

@@ -6,7 +6,8 @@
   "scripts": {
     "main": "node dist/server.js",
     "server": "ts-node src/server.ts",
-    "dev": "nodemon",
+    "dev": "tsx watch src/server.ts",
+    "dev:nodemon": "nodemon",
     "pino": "pino-pretty",
     "test": "npx jest",
     "format": "prettier --write .",
