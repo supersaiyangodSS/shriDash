@@ -125,9 +125,11 @@ router.get(
  *       200:
  *         description: Sevekari deleted successfully
  *       400:
- *         description: Invalid id
+ *         description: Invalid sevekari id
  *       401:
  *         description: Unauthorized
+ *       404:
+ *         description: Sevekari not found
  *       500:
  *         description: Internal server error
  */
