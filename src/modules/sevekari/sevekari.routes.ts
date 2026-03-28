@@ -106,7 +106,7 @@ router.get(
 /**
  * @swagger
  * /sevekari/{id}:
- *   patch:
+ *   delete:
  *     summary: Soft delete sevekari
  *     description: Soft delete sevekari with id
  *     tags:
@@ -133,17 +133,17 @@ router.get(
  *       500:
  *         description: Internal server error
  */
-router.patch(
+router.delete(
   "/:id",
   authMiddleware,
   allowRoles(ROLES.SUPERADMIN, ROLES.ADMIN),
-  auditMiddleware("PATCH", "SEVEKARI"),
+  auditMiddleware("DELETE", "SEVEKARI"),
   controller.softDeleteSevekariController,
 );
 /**
  * @swagger
  * /sevekari/{id}/force:
- *   patch:
+ *   delete:
  *     summary: Force delete sevekari
  *     description: Force delete sevekari with id
  *     tags:
@@ -172,11 +172,11 @@ router.patch(
  *       500:
  *         description: Internal server error
  */
-router.patch(
+router.delete(
   "/:id/force",
   authMiddleware,
   allowRoles(ROLES.SUPERADMIN),
-  auditMiddleware("PATCH", "SEVEKARI"),
+  auditMiddleware("DELETE", "SEVEKARI"),
   controller.forceDeleteSevekariController,
 );
 
