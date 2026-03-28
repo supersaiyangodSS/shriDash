@@ -140,5 +140,44 @@ router.patch(
   auditMiddleware("PATCH", "SEVEKARI"),
   controller.softDeleteSevekariController,
 );
+/**
+ * @swagger
+ * /sevekari/{id}/force:
+ *   patch:
+ *     summary: Force delete sevekari
+ *     description: Force delete sevekari with id
+ *     tags:
+ *       - Sevekari
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the sevekari to force delete
+ *         schema:
+ *           type: string
+ *           example: 69c5124bb792af3f448a473f
+ *     responses:
+ *       200:
+ *         description: Sevekari deleted successfully
+ *       400:
+ *         description: Invalid sevekari id
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ *       404:
+ *         description: Sevekari not found
+ *       500:
+ *         description: Internal server error
+ */
+router.patch(
+  "/:id/force",
+  authMiddleware,
+  allowRoles(ROLES.SUPERADMIN),
+  auditMiddleware("PATCH", "SEVEKARI"),
+  controller.forceDeleteSevekariController,
+);
 
 export default router;
