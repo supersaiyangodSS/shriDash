@@ -47,6 +47,19 @@ export const softDeleteSevekari = async (id: string) => {
   return user;
 };
 
+export const restoreSoftDeletedSevekari = async (id: string) => {
+  const user = await Sevekari.findOneAndUpdate(
+    { _id: id, deleted: true },
+    {
+      $set: {
+        deleted: false,
+      },
+    },
+    { new: true },
+  ).lean();
+  if (!user) throw new AppError("Sevekari not found", HTTP_CODES.NOT_FOUND);
+};
+
 export const forceDeleteSevekari = async (id: string) => {
   const user = await Sevekari.findByIdAndDelete({ _id: id }).lean();
   if (!user) throw new AppError("User not found", HTTP_CODES.NOT_FOUND);

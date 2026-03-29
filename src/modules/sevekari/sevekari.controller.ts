@@ -6,6 +6,7 @@ import {
   createSevekari,
   forceDeleteSevekari,
   getSevekari,
+  restoreSoftDeletedSevekari,
   softDeleteSevekari,
 } from "./sevekari.service";
 import { SevekariDto } from "./sevekari.validator";
@@ -53,6 +54,20 @@ export const softDeleteSevekariController = async (
     const id = req.params.id;
     const result = await softDeleteSevekari(id);
     successResponse(res, HTTP_CODES.OK, "Sevekari deleted", result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const restoreSoftDeletedSevekariController = async (
+  req: Request<Params>,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const id = req.params.id;
+    const result = await restoreSoftDeletedSevekari(id);
+    successResponse(res, HTTP_CODES.OK, "Sevekari restored", result);
   } catch (error) {
     next(error);
   }
