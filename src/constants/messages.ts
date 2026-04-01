@@ -39,6 +39,9 @@ export const MESSAGE = {
   SEVEKARI: {
     SEVEKARI_CREATED_SUCCESS: "Sevekari created successfully",
     SEVEKARI_MOBILE_ALREADY_EXISTS: "Mobile already exists",
+    SEVEKARI_MISSING_TEMPLE_ID: "Missing temple id for sevekari",
+    SEVEKARI_NOT_FOUND_OR_DELETED: "Sevekari not found or deleted",
+    SEVEKARI_NOT_FOUND: "Sevekari not found",
   },
   COMMON: {
     SERVER_ERROR: "Internal server error",
@@ -50,5 +53,8 @@ export const MESSAGE = {
   },
   URL: {
     VERIFY_EMAIL: "http://localhost:4001/api/user/verify-email/",
+  },
+  TEMPLE: {
+    TEMPLE_CREATED: "Temple created",
   },
 } as const;
