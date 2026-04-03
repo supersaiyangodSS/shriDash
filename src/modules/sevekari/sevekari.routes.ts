@@ -1,11 +1,17 @@
 import { validate } from "@/middleware/validate.middleware";
 import { Router } from "express";
-import { SevekariSchema } from "./sevekari.validator";
+import {
+  SevekariIdSchema,
+  SevekariSchema,
+  UpdateSevekariDto,
+  UpdateSevekariSchema,
+} from "./sevekari.validator";
 import { auditMiddleware } from "@/middleware/audit.middleware";
 import * as controller from "@/modules/sevekari/sevekari.controller";
 import { allowRoles } from "@/middleware/role.middleware";
 import { ROLES } from "@/constants/roles";
 import { authMiddleware } from "@/middleware/auth.middleware";
+import { UserIdSchema } from "../users";
 
 const router = Router();
 
@@ -103,6 +109,85 @@ router.get(
   allowRoles(ROLES.SUPERADMIN, ROLES.ADMIN),
   controller.getSevekariController,
 );
+
+/**
+ * @swagger
+ * /sevekari/{id}:
+ *   patch:
+ *     summary: Update sevekari
+ *     description: Update sevekari with id
+ *     tags:
+ *       - Sevekari
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the sevekari to update
+ *         schema:
+ *           type: string
+ *           example: 69ccab094b480eb596d86107
+ *     requestBody:
+ *       required: true
+ *       description: Data required to create user
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - firstName
+ *               - lastName
+ *               - username
+ *               - email
+ *               - password
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *                 example: Vedant
+ *               middleName:
+ *                 type: string,
+ *                 example: Suresh
+ *               lastName:
+ *                 type: string
+ *                 example: Kale
+ *               email:
+ *                 type: string
+ *                 example: vedant@gmail.com
+ *               mobile:
+ *                 type: string
+ *                 example: 1234567890
+ *               mobileAlt:
+ *                 type: string
+ *                 example: 0987654321
+ *               address:
+ *                 type: string
+ *                 example: xyzjsdklfjalfj
+ *     responses:
+ *       200:
+ *         description: Sevekari updated successfully
+ *       400:
+ *         description: Invalid sevekari id
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ *       404:
+ *         description: Sevekari not found
+ *       500:
+ *         description: Internal server error
+ */
+
+router.patch(
+  "/:id",
+  validate(SevekariIdSchema, "params"),
+  validate(UpdateSevekariSchema, "body"),
+  authMiddleware,
+  auditMiddleware("PATCH", "SEVEKARI"),
+  allowRoles(ROLES.SUPERADMIN, ROLES.ADMIN),
+  controller.updateSevekariController,
+);
+
 /**
  * @swagger
  * /sevekari/{id}:
@@ -135,6 +220,7 @@ router.get(
  */
 router.delete(
   "/:id",
+  validate(SevekariIdSchema),
   authMiddleware,
   allowRoles(ROLES.SUPERADMIN, ROLES.ADMIN),
   auditMiddleware("DELETE", "SEVEKARI"),
@@ -176,6 +262,7 @@ router.delete(
 
 router.patch(
   "/:id/restore",
+  validate(SevekariIdSchema),
   authMiddleware,
   allowRoles(ROLES.SUPERADMIN, ROLES.ADMIN),
   auditMiddleware("PATCH", "SEVEKARI"),
@@ -216,6 +303,7 @@ router.patch(
  */
 router.delete(
   "/:id/force",
+  validate(SevekariIdSchema),
   authMiddleware,
   allowRoles(ROLES.SUPERADMIN),
   auditMiddleware("DELETE", "SEVEKARI"),

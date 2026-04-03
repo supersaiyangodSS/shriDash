@@ -1,7 +1,7 @@
 import "@/modules/temple/temple.model";
 import { HTTP_CODES } from "@/constants/httpCodes";
 import { Sevekari } from "./sevekari.model";
-import { SevekariDto } from "./sevekari.validator";
+import { SevekariDto, UpdateSevekariDto } from "./sevekari.validator";
 import { MESSAGE } from "@/constants/messages";
 import { AppError } from "@/errors/AppError";
 import { logger } from "@/utils/logger";
@@ -37,6 +37,25 @@ export const getSevekari = async () => {
     }
   });
   return data;
+};
+
+export const updateSevekari = async (
+  id: string,
+  payload: UpdateSevekariDto,
+) => {
+  const mobileExists = await Sevekari.exists({ mobile: payload.mobile });
+  if (mobileExists)
+    throw new AppError(
+      MESSAGE.SEVEKARI.SEVEKARI_MOBILE_ALREADY_EXISTS,
+      HTTP_CODES.NOT_FOUND,
+    );
+  const sevekari = await Sevekari.findByIdAndUpdate(id, payload, { new: true });
+  if (!sevekari)
+    throw new AppError(
+      MESSAGE.SEVEKARI.SEVEKARI_NOT_FOUND,
+      HTTP_CODES.NOT_FOUND,
+    );
+  return sevekari;
 };
 
 export const softDeleteSevekari = async (id: string) => {

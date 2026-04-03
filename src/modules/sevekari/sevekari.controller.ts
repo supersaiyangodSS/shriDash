@@ -8,8 +8,12 @@ import {
   getSevekari,
   restoreSoftDeletedSevekari,
   softDeleteSevekari,
+  updateSevekari,
 } from "./sevekari.service";
-import { SevekariDto } from "./sevekari.validator";
+import { SevekariDto, UpdateSevekariDto } from "./sevekari.validator";
+import { logger } from "@/utils/logger";
+import { Sevekari } from "./sevekari.model";
+import { AppError } from "@/errors/AppError";
 
 type Params = { id: string };
 
@@ -40,6 +44,21 @@ export const getSevekariController = async (
   try {
     const result = await getSevekari();
     successResponse(res, HTTP_CODES.OK, "Fetched sevekari", result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateSevekariController = async (
+  req: Request<Params>,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const id = req.params.id;
+    const payload = req.body;
+    const result = await updateSevekari(id, payload);
+    successResponse(res, HTTP_CODES.OK, "Fetched updated sevekari", result);
   } catch (error) {
     next(error);
   }
