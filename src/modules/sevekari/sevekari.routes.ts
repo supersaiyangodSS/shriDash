@@ -184,7 +184,7 @@ router.patch(
   validate(UpdateSevekariSchema, "body"),
   authMiddleware,
   auditMiddleware("PATCH", "SEVEKARI"),
-  allowRoles(ROLES.SUPERADMIN, ROLES.ADMIN),
+  allowRoles(ROLES.SUPERADMIN),
   controller.updateSevekariController,
 );
 
