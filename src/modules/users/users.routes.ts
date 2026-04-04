@@ -230,7 +230,8 @@ router.patch(
  */
 router.patch(
   "/:id",
-  validate(UpdateUserSchema),
+  validate(UserIdSchema, "params"),
+  validate(UpdateUserSchema, "body"),
   authMiddleware,
   auditMiddleware("PATCH", "USER"),
   allowRoles(ROLES.SUPERADMIN, ROLES.ADMIN, ROLES.USER),
@@ -281,7 +282,8 @@ router.patch(
  */
 router.patch(
   "/:id/reset-password",
-  validate(UpdateUserPassSchema),
+  validate(UserIdSchema, "params"),
+  validate(UpdateUserPassSchema, "body"),
   authMiddleware,
   auditMiddleware("PATCH", "USER"),
   allowRoles(ROLES.SUPERADMIN, ROLES.ADMIN, ROLES.USER),
@@ -331,7 +333,8 @@ router.patch(
  */
 router.patch(
   "/:id/email",
-  validate(UserEmailSchema),
+  validate(UserIdSchema, "params"),
+  validate(UserEmailSchema, "body"),
   authMiddleware,
   auditMiddleware("PATCH", "USER"),
   allowRoles(ROLES.SUPERADMIN, ROLES.ADMIN, ROLES.USER),
