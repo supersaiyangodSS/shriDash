@@ -1,13 +1,13 @@
 import { HydratedDocument, Schema, model, Model } from "mongoose";
 import bcrypt from "bcrypt";
-import { ROLES } from "@/constants/roles";
-import { IUser, IUserMethods } from "./user.types";
+import { ROLES } from "@/constants";
+import { IUser, IUserMethods } from "@/modules/users";
 
-export type UserDocument = HydratedDocument<IUser, IUserMethods>; //explain
+export type UserDocument = HydratedDocument<IUser, IUserMethods>;
 
-type UserModel = Model<IUser, {}, IUserMethods>; //explain
+type UserModel = Model<IUser, {}, IUserMethods>;
 
-const userSchema = new Schema<IUser, UserModel, IUserMethods>( //explain
+const userSchema = new Schema<IUser, UserModel, IUserMethods>(
   {
     firstName: {
       type: String,
@@ -93,4 +93,4 @@ userSchema.methods.comparePassword = async function (password: string) {
   return bcrypt.compare(password, this.password);
 };
 
-export const User = model<IUser, UserModel>("User", userSchema); // explain
+export const User = model<IUser, UserModel>("User", userSchema);

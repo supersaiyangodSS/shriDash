@@ -1,5 +1,4 @@
-import { Temple } from "@/modules/temple";
-import { CreateTempleDto } from "./temple.validator";
+import { Temple, CreateTempleDto } from "@/modules/temple";
 import { AppError } from "@/errors/AppError";
 import { HTTP_CODES } from "@/constants";
 

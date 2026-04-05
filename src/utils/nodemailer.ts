@@ -1,7 +1,7 @@
 import { env } from "@/config";
 import { createTransport } from "nodemailer";
 import { logger } from "./logger";
-import { MESSAGE } from "@/constants/messages";
+import { MESSAGE } from "@/constants";
 
 const transporter = createTransport({
   service: "gmail",

@@ -1,11 +1,12 @@
 import { Router } from "express";
-import { createTempleController } from "@/modules/temple";
-import { authMiddleware } from "@/middleware/auth.middleware";
-import { auditMiddleware } from "@/middleware/audit.middleware";
-import { allowRoles } from "@/middleware/role.middleware";
+import { createTempleController, CreateTempleSchema } from "@/modules/temple";
+import {
+  authMiddleware,
+  auditMiddleware,
+  allowRoles,
+  validate,
+} from "@/middleware/";
 import { ROLES } from "@/constants";
-import { CreateTempleSchema } from "./temple.validator";
-import { validate } from "@/middleware/validate.middleware";
 
 const router = Router();
 

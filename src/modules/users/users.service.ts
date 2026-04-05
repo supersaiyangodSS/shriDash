@@ -1,11 +1,7 @@
 import { AppError } from "@/errors/AppError";
-import { HTTP_CODES } from "@/constants/httpCodes";
-import { sendEmail } from "@/utils/nodemailer";
-import { generateVerificationToken } from "@/utils/generateToken";
-import { CreateUserDto, UpdateUserDto } from "./users.validator";
-import { User } from "./users.model";
-import { MESSAGE } from "@/constants/messages";
-import { ROLES } from "@/constants/roles";
+import { HTTP_CODES, MESSAGE, ROLES } from "@/constants";
+import { generateVerificationToken, sendEmail } from "@/utils";
+import { CreateUserDto, UpdateUserDto, User } from "@/modules/users";
 
 export const createUser = async (data: CreateUserDto) => {
   const existing = await User.findOne({

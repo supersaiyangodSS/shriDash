@@ -1,12 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import * as userService from "@/modules/users/users.service";
+import * as userService from "@/modules/users";
 import mongoose from "mongoose";
-import { HTTP_CODES } from "@/constants/httpCodes";
-import { successResponse } from "@/utils/response";
+import { HTTP_CODES, MESSAGE, ROLES } from "@/constants";
+import { successResponse } from "@/utils";
 import { AppError } from "@/errors/AppError";
-import { ROLES } from "@/constants/roles";
-import { verifyEmail } from "@/modules/users/users.service";
-import { MESSAGE } from "@/constants/messages";
+import { verifyEmail } from "@/modules/users";
 
 export const createUserController = async (
   req: Request,

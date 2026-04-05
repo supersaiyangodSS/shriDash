@@ -1,8 +1,7 @@
 import "dotenv/config";
 import app from "@/app";
-import { env } from "@/config";
-import { logger } from "@/utils/logger";
-import { connectDB } from "@/config/";
+import { env, connectDB } from "@/config";
+import { logger } from "@/utils";
 
 function startServer() {
   return new Promise((resolve, reject) => {

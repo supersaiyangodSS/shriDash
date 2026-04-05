@@ -1,6 +1,5 @@
 import { Router } from "express";
 import * as controller from "@/modules/users/users.controller";
-import { validate } from "@/middleware/validate.middleware";
 import {
   CreateUserSchema,
   UpdateUserPassSchema,
@@ -9,10 +8,13 @@ import {
   UserEmailSchema,
   TokenSchema,
 } from "@/modules/users";
-import { authMiddleware } from "@/middleware/auth.middleware";
-import { allowRoles } from "@/middleware/role.middleware";
-import { ROLES } from "@/constants/roles";
-import { auditMiddleware } from "@/middleware/audit.middleware";
+import {
+  validate,
+  authMiddleware,
+  allowRoles,
+  auditMiddleware,
+} from "@/middleware";
+import { ROLES } from "@/constants";
 
 const router = Router();
 
