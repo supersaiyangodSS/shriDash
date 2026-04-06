@@ -1,9 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { loginService } from "@/modules/auth";
-import { HTTP_CODES } from "@/constants/httpCodes";
+import { HTTP_CODES, MESSAGE } from "@/constants";
 import { successResponse } from "@/utils/response";
 import { env, cookieOptions } from "@/config";
-import { MESSAGE } from "@/constants/messages";
 
 export const loginController = async (
   req: Request,

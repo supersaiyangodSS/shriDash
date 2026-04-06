@@ -1,11 +1,9 @@
 import jwt from "jsonwebtoken";
 import { env } from "@/config";
-import { LoginDto } from "./auth.validator";
+import { LoginDto, AuthUser } from "@/modules/auth";
 import { AppError } from "@/errors/AppError";
-import { HTTP_CODES } from "@/constants/httpCodes";
-import { AuthUser } from "./types/auth.types";
-import { User } from "../users/users.model";
-import { MESSAGE } from "@/constants/messages";
+import { HTTP_CODES, MESSAGE } from "@/constants";
+import { User } from "@/modules/users";
 
 export const generateTokenService = (payload: AuthUser) => {
   return jwt.sign(payload, env.JWT_SECRET, { expiresIn: "7d" });
