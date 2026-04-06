@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { logger } from "@/utils/logger";
-import { HTTP_CODES } from "@/constants/httpCodes";
+import { HTTP_CODES } from "@/constants";
 import { AppError } from "@/errors/AppError";
 
 export const errorHandler = (

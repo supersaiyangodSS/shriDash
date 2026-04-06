@@ -1,5 +1,4 @@
-import { Sevekari } from "../sevekari.model";
-import { createSevekari } from "../sevekari.service";
+import { Sevekari, createSevekari } from "@/modules/sevekari";
 
 jest.mock("../sevekari.model", () => ({
   Sevekari: {

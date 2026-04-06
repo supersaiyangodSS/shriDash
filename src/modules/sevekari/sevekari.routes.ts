@@ -1,17 +1,17 @@
-import { validate } from "@/middleware/validate.middleware";
 import { Router } from "express";
 import {
   SevekariIdSchema,
   SevekariSchema,
-  UpdateSevekariDto,
   UpdateSevekariSchema,
-} from "./sevekari.validator";
-import { auditMiddleware } from "@/middleware/audit.middleware";
+} from "@/modules/sevekari";
+import {
+  validate,
+  auditMiddleware,
+  authMiddleware,
+  allowRoles,
+} from "@/middleware";
 import * as controller from "@/modules/sevekari/sevekari.controller";
-import { allowRoles } from "@/middleware/role.middleware";
-import { ROLES } from "@/constants/roles";
-import { authMiddleware } from "@/middleware/auth.middleware";
-import { UserIdSchema } from "../users";
+import { ROLES } from "@/constants";
 
 const router = Router();
 

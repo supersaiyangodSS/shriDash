@@ -1,5 +1,4 @@
-import { HTTP_CODES } from "@/constants/httpCodes";
-import { MESSAGE } from "@/constants/messages";
+import { HTTP_CODES, MESSAGE } from "@/constants";
 import { successResponse } from "@/utils/response";
 import { NextFunction, Request, Response } from "express";
 import {
@@ -9,11 +8,8 @@ import {
   restoreSoftDeletedSevekari,
   softDeleteSevekari,
   updateSevekari,
-} from "./sevekari.service";
-import { SevekariDto, UpdateSevekariDto } from "./sevekari.validator";
-import { logger } from "@/utils/logger";
-import { Sevekari } from "./sevekari.model";
-import { AppError } from "@/errors/AppError";
+  SevekariDto,
+} from "@/modules/sevekari";
 
 type Params = { id: string };
 

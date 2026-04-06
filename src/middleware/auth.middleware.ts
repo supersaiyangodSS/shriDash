@@ -1,9 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { env } from "@/config/env.config";
-import { HTTP_CODES } from "@/constants/httpCodes";
+import { HTTP_CODES } from "@/constants";
 import { AppError } from "@/errors/AppError";
-import { logger } from "@/utils/logger";
 
 export const authMiddleware = (
   req: Request,

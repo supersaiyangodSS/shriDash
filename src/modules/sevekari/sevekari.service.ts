@@ -1,10 +1,8 @@
 import "@/modules/temple/temple.model";
-import { HTTP_CODES } from "@/constants/httpCodes";
-import { Sevekari } from "./sevekari.model";
-import { SevekariDto, UpdateSevekariDto } from "./sevekari.validator";
-import { MESSAGE } from "@/constants/messages";
+import { HTTP_CODES, MESSAGE } from "@/constants";
+import { Sevekari, SevekariDto, UpdateSevekariDto } from "@/modules/sevekari";
 import { AppError } from "@/errors/AppError";
-import { logger } from "@/utils/logger";
+import { logger } from "@/utils";
 import { env } from "@/config";
 
 export const createSevekari = async (payload: SevekariDto) => {

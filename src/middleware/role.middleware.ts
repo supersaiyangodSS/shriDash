@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { HTTP_CODES } from "@/constants/httpCodes";
+import { HTTP_CODES } from "@/constants";
 
 export const allowRoles =
   (...roles: string[]) =>
