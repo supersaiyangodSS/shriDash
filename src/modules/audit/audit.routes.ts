@@ -1,8 +1,6 @@
-import { ROLES } from "@/constants/roles";
-import { auditMiddleware } from "@/middleware/audit.middleware";
-import { authMiddleware } from "@/middleware/auth.middleware";
-import { allowRoles } from "@/middleware/role.middleware";
 import { Router } from "express";
+import { ROLES } from "@/constants/roles";
+import { auditMiddleware, authMiddleware, allowRoles } from "@/middleware";
 import * as controller from "@/modules/audit/audit.controller";
 
 const router = Router();

@@ -1,4 +1,4 @@
-import { AuditLog } from "@/modules/users/audit/audit.model";
+import { AuditLog } from "@/modules/audit";
 
 export const getAuditLogs = async (page: number, limit: number) => {
   const safePage = Math.max(page, 1);

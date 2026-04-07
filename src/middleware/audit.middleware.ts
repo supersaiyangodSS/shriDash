@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { AuditLog } from "@/modules/users/audit";
+import { AuditLog } from "@/modules/audit";
 
 export const auditMiddleware = (action: string, resource: string) => {
   return (req: Request, res: Response, next: NextFunction) => {
