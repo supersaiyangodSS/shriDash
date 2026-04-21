@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { loginService } from "@/modules/auth";
+import { loginService } from "./auth.service";
 import { HTTP_CODES, MESSAGE } from "@/constants";
 import { successResponse } from "@/utils/response";
 import { env, cookieOptions } from "@/config";

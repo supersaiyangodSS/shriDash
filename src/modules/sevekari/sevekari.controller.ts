@@ -8,8 +8,8 @@ import {
   restoreSoftDeletedSevekari,
   softDeleteSevekari,
   updateSevekari,
-  SevekariDto,
-} from "@/modules/sevekari";
+} from "./sevekari.service";
+import { SevekariDto } from "./sevekari.validator";
 
 type Params = { id: string };
 

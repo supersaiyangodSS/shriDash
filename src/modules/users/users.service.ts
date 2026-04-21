@@ -1,7 +1,8 @@
 import { AppError } from "@/errors/AppError";
 import { HTTP_CODES, MESSAGE, ROLES } from "@/constants";
 import { generateVerificationToken, sendEmail } from "@/utils";
-import { CreateUserDto, UpdateUserDto, User } from "@/modules/users";
+import { CreateUserDto, UpdateUserDto } from "./users.validator";
+import { User } from "./users.model";
 
 export const createUser = async (data: CreateUserDto) => {
   const existing = await User.findOne({

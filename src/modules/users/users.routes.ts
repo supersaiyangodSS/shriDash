@@ -1,5 +1,5 @@
 import { Router } from "express";
-import * as controller from "@/modules/users/users.controller";
+import * as controller from "./users.controller";
 import {
   CreateUserSchema,
   UpdateUserPassSchema,
@@ -7,7 +7,7 @@ import {
   UserIdSchema,
   UserEmailSchema,
   TokenSchema,
-} from "@/modules/users";
+} from "./users.validator";
 import {
   validate,
   authMiddleware,

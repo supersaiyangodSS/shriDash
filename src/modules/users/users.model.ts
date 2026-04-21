@@ -1,7 +1,7 @@
 import { HydratedDocument, Schema, model, Model } from "mongoose";
 import bcrypt from "bcrypt";
 import { ROLES } from "@/constants";
-import { IUser, IUserMethods } from "@/modules/users";
+import { IUser, IUserMethods } from "./users.types";
 
 export type UserDocument = HydratedDocument<IUser, IUserMethods>;
 

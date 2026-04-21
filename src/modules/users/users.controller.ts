@@ -1,10 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import * as userService from "@/modules/users";
+import * as userService from "./users.service";
 import mongoose from "mongoose";
 import { HTTP_CODES, MESSAGE, ROLES } from "@/constants";
 import { successResponse } from "@/utils";
 import { AppError } from "@/errors/AppError";
-import { verifyEmail } from "@/modules/users";
 
 export const createUserController = async (
   req: Request,
@@ -182,7 +181,7 @@ export const verifyEmailController = async (
 ) => {
   try {
     const token = req.params.token as string;
-    await verifyEmail(token);
+    await userService.verifyEmail(token);
     successResponse(res, HTTP_CODES.OK, "Email verification successful");
   } catch (error) {
     next(error);

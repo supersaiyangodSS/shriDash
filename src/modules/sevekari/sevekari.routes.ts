@@ -3,7 +3,7 @@ import {
   SevekariIdSchema,
   SevekariSchema,
   UpdateSevekariSchema,
-} from "@/modules/sevekari";
+} from "./sevekari.validator";
 import {
   validate,
   auditMiddleware,

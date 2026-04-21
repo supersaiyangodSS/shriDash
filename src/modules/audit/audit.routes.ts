@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { ROLES } from "@/constants/roles";
 import { auditMiddleware, authMiddleware, allowRoles } from "@/middleware";
-import * as controller from "@/modules/audit/audit.controller";
+import * as controller from "./audit.controller";
 
 const router = Router();
 /**

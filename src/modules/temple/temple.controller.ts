@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { createTemple, CreateTempleDto } from "@/modules/temple";
+import { createTemple } from "./temple.service";
+import { CreateTempleDto } from "./temple.validator";
 import { successResponse } from "@/utils/response";
 import { HTTP_CODES, MESSAGE } from "@/constants";
 

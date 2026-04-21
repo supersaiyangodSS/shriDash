@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { getAuditLogs } from "@/modules/audit";
+import { getAuditLogs } from "./audit.service";
 import { successResponse } from "@/utils/response";
 import { HTTP_CODES } from "@/constants/httpCodes";
 

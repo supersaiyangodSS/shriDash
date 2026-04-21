@@ -1,6 +1,7 @@
 import "@/modules/temple/temple.model";
 import { HTTP_CODES, MESSAGE } from "@/constants";
-import { Sevekari, SevekariDto, UpdateSevekariDto } from "@/modules/sevekari";
+import { Sevekari } from "./sevekari.model";
+import { SevekariDto, UpdateSevekariDto } from "./sevekari.validator";
 import { AppError } from "@/errors/AppError";
 import { logger } from "@/utils";
 import { env } from "@/config";

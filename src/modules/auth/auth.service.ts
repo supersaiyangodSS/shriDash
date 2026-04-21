@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { env } from "@/config";
-import { LoginDto, AuthUser } from "@/modules/auth";
+import { LoginDto } from "./auth.validator";
+import { AuthUser } from "./auth.types";
 import { AppError } from "@/errors/AppError";
 import { HTTP_CODES, MESSAGE } from "@/constants";
 import { User } from "@/modules/users";

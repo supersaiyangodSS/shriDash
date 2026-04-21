@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { createTempleController, CreateTempleSchema } from "@/modules/temple";
+import { createTempleController } from "./temple.controller";
+import { CreateTempleSchema } from "./temple.validator";
 import {
   authMiddleware,
   auditMiddleware,
