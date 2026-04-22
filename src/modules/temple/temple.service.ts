@@ -12,5 +12,5 @@ export const createTemple = async (payload: CreateTempleDto) => {
   if (exists) throw new AppError("Temple already exists", HTTP_CODES.CONFLICT);
   const temple = await Temple.create(payload);
 
-  return temple.toObject();
+  return temple.toObject({ versionKey: false });
 };

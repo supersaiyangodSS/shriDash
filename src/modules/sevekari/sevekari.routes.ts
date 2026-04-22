@@ -184,7 +184,7 @@ router.patch(
   validate(UpdateSevekariSchema, "body"),
   authMiddleware,
   auditMiddleware("PATCH", "SEVEKARI"),
-  allowRoles(ROLES.SUPERADMIN),
+  allowRoles(ROLES.ADMIN, ROLES.SUPERADMIN),
   controller.updateSevekariController,
 );
 
@@ -264,7 +264,7 @@ router.patch(
   "/:id/restore",
   validate(SevekariIdSchema),
   authMiddleware,
-  allowRoles(ROLES.SUPERADMIN, ROLES.ADMIN),
+  allowRoles(ROLES.SUPERADMIN),
   auditMiddleware("PATCH", "SEVEKARI"),
   controller.restoreSoftDeletedSevekariController,
 );
