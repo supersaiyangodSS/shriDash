@@ -45,7 +45,10 @@ export const getUsers = async (page: number, limit: number) => {
   const safeLimit = Math.max(limit, 1);
   const skip = (safePage - 1) * safeLimit;
 
-  const users = await User.find().skip(skip).limit(safeLimit).lean();
+  const users = await User.find({}, { __v: 0 })
+    .skip(skip)
+    .limit(safeLimit)
+    .lean();
 
   const total = await User.countDocuments();
   const pages = Math.ceil(total / safeLimit);
