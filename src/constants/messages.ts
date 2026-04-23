@@ -56,5 +56,6 @@ export const MESSAGE = {
   },
   TEMPLE: {
     TEMPLE_CREATED: "Temple created",
+    TEMPLE_FETCHED: "Temple fetched",
   },
 } as const;
