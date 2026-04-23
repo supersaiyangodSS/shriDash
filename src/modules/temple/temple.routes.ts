@@ -1,5 +1,8 @@
 import { Router } from "express";
-import { createTempleController } from "./temple.controller";
+import {
+  createTempleController,
+  getTempleController,
+} from "./temple.controller";
 import { CreateTempleSchema } from "./temple.validator";
 import {
   authMiddleware,
@@ -71,6 +74,54 @@ router.post(
   auditMiddleware("POST", "TEMPLE"),
   allowRoles(ROLES.SUPERADMIN),
   createTempleController,
+);
+
+/**
+ * @swagger
+ * /temple:
+ *   get:
+ *     summary: Get all temples
+ *     description: Get all temples with pagination
+ *     tags:
+ *       - Temple
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *         description: Page number (default = 1)
+ *       - in: query
+ *         name: limit
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           example: 10
+ *         description: Limit (default = 10)
+ *     responses:
+ *       200:
+ *         description: All temples fetched
+ *       400:
+ *         description: Invalid input data
+ *       401:
+ *         description: Unauthorized - authentication required
+ *       403:
+ *         description: Forbidden
+ *       409:
+ *         description: Conflict
+ *       500:
+ *         description: Internal server error
+ */
+
+router.get(
+  "/",
+  authMiddleware,
+  auditMiddleware("GET", "TEMPLE"),
+  allowRoles(ROLES.SUPERADMIN),
+  getTempleController,
 );
 
 export default router;
