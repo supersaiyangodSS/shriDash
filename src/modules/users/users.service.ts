@@ -191,27 +191,26 @@ export const updateUserEmail = async (
   actorRole: string,
   actorId: string,
 ) => {
-  const normalizedEmail = email;
-  const user = await User.findById(id);
-  if (!user)
-    throw new AppError(MESSAGE.USER.USER_NOT_FOUND, HTTP_CODES.NOT_FOUND);
+  const normalizedEmail = email.trim().toLowerCase();
 
-  if (Boolean(user.deleted) === true) {
-    if (actorRole !== ROLES.SUPERADMIN) {
-      throw new AppError(
-        MESSAGE.USER.CANNOT_UPDATE_EMAIL_OF_DELETED_USER,
-        HTTP_CODES.BAD_REQUEST,
-      );
-    }
+  const user = await User.findById(id);
+
+  if (!user) {
+    throw new AppError(MESSAGE.USER.USER_NOT_FOUND, HTTP_CODES.NOT_FOUND);
   }
 
-  if (Boolean(user.deleted) === false) {
-    if (actorRole === ROLES.USER && actorId !== id) {
-      throw new AppError(
-        MESSAGE.USER.YOU_CAN_ONLY_SET_YOUR_OWN_EMAIL,
-        HTTP_CODES.FORBIDDEN,
-      );
-    }
+  if (user.deleted && actorRole !== ROLES.SUPERADMIN) {
+    throw new AppError(
+      MESSAGE.USER.CANNOT_UPDATE_EMAIL_OF_DELETED_USER,
+      HTTP_CODES.BAD_REQUEST,
+    );
+  }
+
+  if (actorRole === ROLES.USER && actorId !== id) {
+    throw new AppError(
+      MESSAGE.USER.YOU_CAN_ONLY_SET_YOUR_OWN_EMAIL,
+      HTTP_CODES.FORBIDDEN,
+    );
   }
 
   if (user.email === normalizedEmail) {
@@ -225,11 +224,15 @@ export const updateUserEmail = async (
     email: normalizedEmail,
     _id: { $ne: id },
   });
-  if (existingUser)
+
+  if (existingUser) {
     throw new AppError(MESSAGE.USER.EMAIL_ALREADY_EXISTS, HTTP_CODES.CONFLICT);
+  }
 
   user.email = normalizedEmail;
+
   await user.save();
+
   return user;
 };
 
@@ -243,4 +246,13 @@ export const verifyEmail = async (token: string) => {
   user.isTokenUsed = true;
   await user.save();
   return user.toObject({ versionKey: false });
+};
+
+export const me = async (id: string) => {
+  const user = await User.findById(id)
+    .select(
+      "-emailVerificationExpires -isTokenUsed -deleted -deletedAt -createdAt -updatedAt -__v -pendingEmail",
+    )
+    .lean();
+  return user;
 };
