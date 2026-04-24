@@ -371,4 +371,12 @@ router.get(
   controller.verifyEmailController,
 );
 
+router.get(
+  "/me",
+  authMiddleware,
+  auditMiddleware("GET", "USER"),
+  allowRoles(ROLES.SUPERADMIN, ROLES.ADMIN, ROLES.USER),
+  controller.meController,
+);
+
 export default router;

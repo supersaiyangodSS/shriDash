@@ -151,25 +151,18 @@ export const updateUserEmailController = async (
   try {
     const id = req.params.id as string;
     const email = req.body.email;
-    const actorRole = (req as any).user.role;
-    const actorId = (req as any).user.id;
-    console.log("actorId", actorId);
 
-    if ((req as any).user.role === ROLES.USER && (req as any).user.id !== id) {
-      throw new AppError(
-        MESSAGE.USER.YOU_CAN_ONLY_SET_YOUR_OWN_EMAIL,
-        HTTP_CODES.FORBIDDEN,
-      );
-    }
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new AppError(MESSAGE.USER.INVALID_USER_ID, HTTP_CODES.BAD_REQUEST);
     }
+
     const result = await userService.updateUserEmail(
       id,
       email,
-      actorRole,
-      actorId,
+      (req as any).user.role,
+      (req as any).user.id,
     );
+
     successResponse(
       res,
       HTTP_CODES.OK,
@@ -189,7 +182,26 @@ export const verifyEmailController = async (
   try {
     const token = req.params.token as string;
     await userService.verifyEmail(token);
-    successResponse(res, HTTP_CODES.OK, "Email verification successful");
+    successResponse(
+      res,
+      HTTP_CODES.OK,
+      MESSAGE.USER.EMAIL_VERIFICATION_SUCCESSFUL,
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const meController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const id = (req as any).user.id;
+    console.log("user id ME:", id);
+    const result = await userService.me(id);
+    successResponse(res, HTTP_CODES.OK, MESSAGE.USER.USER_FETCHED, result);
   } catch (error) {
     next(error);
   }
