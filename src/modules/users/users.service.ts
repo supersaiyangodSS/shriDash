@@ -189,17 +189,29 @@ export const updateUserEmail = async (
   id: string,
   email: string,
   actorRole: string,
+  actorId: string,
 ) => {
   const normalizedEmail = email;
-  const user = await User.findOne({ _id: id, deleted: false });
+  const user = await User.findById(id);
   if (!user)
     throw new AppError(MESSAGE.USER.USER_NOT_FOUND, HTTP_CODES.NOT_FOUND);
 
-  if (user.deleted && actorRole !== ROLES.SUPERADMIN) {
-    throw new AppError(
-      MESSAGE.USER.CANNOT_UPDATE_EMAIL_OF_DELETED_USER,
-      HTTP_CODES.BAD_REQUEST,
-    ); //FIXME: test this
+  if (Boolean(user.deleted) === true) {
+    if (actorRole !== ROLES.SUPERADMIN) {
+      throw new AppError(
+        MESSAGE.USER.CANNOT_UPDATE_EMAIL_OF_DELETED_USER,
+        HTTP_CODES.BAD_REQUEST,
+      );
+    }
+  }
+
+  if (Boolean(user.deleted) === false) {
+    if (actorRole === ROLES.USER && actorId !== id) {
+      throw new AppError(
+        MESSAGE.USER.YOU_CAN_ONLY_SET_YOUR_OWN_EMAIL,
+        HTTP_CODES.FORBIDDEN,
+      );
+    }
   }
 
   if (user.email === normalizedEmail) {
@@ -208,6 +220,7 @@ export const updateUserEmail = async (
       HTTP_CODES.CONFLICT,
     );
   }
+
   const existingUser = await User.exists({
     email: normalizedEmail,
     _id: { $ne: id },

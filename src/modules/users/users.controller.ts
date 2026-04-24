@@ -151,7 +151,9 @@ export const updateUserEmailController = async (
   try {
     const id = req.params.id as string;
     const email = req.body.email;
-    const actorRole = req.body.role;
+    const actorRole = (req as any).user.role;
+    const actorId = (req as any).user.id;
+    console.log("actorId", actorId);
 
     if ((req as any).user.role === ROLES.USER && (req as any).user.id !== id) {
       throw new AppError(
@@ -162,7 +164,12 @@ export const updateUserEmailController = async (
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new AppError(MESSAGE.USER.INVALID_USER_ID, HTTP_CODES.BAD_REQUEST);
     }
-    const result = await userService.updateUserEmail(id, email, actorRole);
+    const result = await userService.updateUserEmail(
+      id,
+      email,
+      actorRole,
+      actorId,
+    );
     successResponse(
       res,
       HTTP_CODES.OK,
