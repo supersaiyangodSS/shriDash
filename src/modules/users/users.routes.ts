@@ -371,6 +371,24 @@ router.get(
   controller.verifyEmailController,
 );
 
+/**
+ * @swagger
+ * /user/me:
+ *    get:
+ *        summary: Self fetch
+ *        description: Fetch your own account details
+ *        tags:
+ *          - Users
+ *        security:
+ *          - bearerAuth: []
+ *        responses:
+ *             200:
+ *                 description: Self fetch successful
+ *             401:
+ *                 description: Unauthorized
+ *             500:
+ *                 description: Internal server error
+ */
 router.get(
   "/me",
   authMiddleware,
