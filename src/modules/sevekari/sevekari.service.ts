@@ -5,6 +5,7 @@ import { SevekariDto, UpdateSevekariDto } from "./sevekari.validator";
 import { AppError } from "@/errors/AppError";
 import { logger } from "@/utils";
 import { env } from "@/config";
+import { Types } from "mongoose";
 
 export const createSevekari = async (payload: SevekariDto) => {
   const existing = await Sevekari.exists({
@@ -42,19 +43,45 @@ export const updateSevekari = async (
   id: string,
   payload: UpdateSevekariDto,
 ) => {
-  const mobileExists = await Sevekari.exists({ mobile: payload.mobile });
-  if (mobileExists)
+  if (!Types.ObjectId.isValid(id)) {
     throw new AppError(
-      MESSAGE.SEVEKARI.SEVEKARI_MOBILE_ALREADY_EXISTS,
-      HTTP_CODES.NOT_FOUND,
+      MESSAGE.SEVEKARI.INVALID_SEVEKARI_ID,
+      HTTP_CODES.BAD_REQUEST,
     );
-  const sevekari = await Sevekari.findByIdAndUpdate(id, payload, { new: true });
-  if (!sevekari)
+  }
+
+  const existing = await Sevekari.findById(id);
+  if (!existing) {
     throw new AppError(
       MESSAGE.SEVEKARI.SEVEKARI_NOT_FOUND,
       HTTP_CODES.NOT_FOUND,
     );
-  return sevekari;
+  }
+  const mobile = payload.mobile;
+  if (mobile && mobile !== existing.mobile) {
+    const mobileExists = await Sevekari.exists({
+      mobile,
+      _id: { $ne: id },
+    });
+
+    if (mobileExists) {
+      throw new AppError(
+        MESSAGE.SEVEKARI.SEVEKARI_MOBILE_ALREADY_EXISTS,
+        HTTP_CODES.CONFLICT,
+      );
+    }
+  }
+
+  const updated = await Sevekari.findByIdAndUpdate(
+    id,
+    { ...payload },
+    {
+      new: true,
+      runValidators: true,
+    },
+  );
+
+  return updated!;
 };
 
 export const softDeleteSevekari = async (id: string) => {

@@ -42,6 +42,7 @@ export const MESSAGE = {
     SEVEKARI_MISSING_TEMPLE_ID: "Missing temple id for sevekari",
     SEVEKARI_NOT_FOUND_OR_DELETED: "Sevekari not found or deleted",
     SEVEKARI_NOT_FOUND: "Sevekari not found",
+    INVALID_SEVEKARI_ID: "Invalid sevekari id",
   },
   COMMON: {
     SERVER_ERROR: "Internal server error",
