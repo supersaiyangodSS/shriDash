@@ -199,7 +199,6 @@ export const meController = async (
 ) => {
   try {
     const id = (req as any).user.id;
-    console.log("user id ME:", id);
     const result = await userService.me(id);
     successResponse(res, HTTP_CODES.OK, MESSAGE.USER.USER_FETCHED, result);
   } catch (error) {

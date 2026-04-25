@@ -370,7 +370,6 @@ router.get(
   auditMiddleware("GET", "USER"),
   controller.verifyEmailController,
 );
-
 /**
  * @swagger
  * /user/me:
