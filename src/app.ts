@@ -27,6 +27,7 @@ app.use(compression());
 app.use(cookieParser());
 app.use(express.json({ limit: "10kb" }));
 app.use(hpp());
+app.use(express.static("public"));
 
 if (env.NODE_ENV !== "production") {
   app.use(
