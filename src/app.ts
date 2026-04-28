@@ -12,6 +12,8 @@ import compression from "compression";
 import swaggerUI from "swagger-ui-express";
 import { engine } from "express-handlebars";
 import path from "node:path";
+import session from "express-session";
+import flash from "connect-flash";
 
 dns.setServers(["8.8.8.8", "8.8.4.4"]);
 
@@ -34,6 +36,14 @@ app.use(express.static(path.resolve("public")));
 app.engine("handlebars", engine());
 app.set("view engine", "handlebars");
 app.set("views", path.resolve("src", "views"));
+app.use(
+  session({
+    secret: "secret",
+    resave: false,
+    saveUninitialized: false,
+  }),
+);
+app.use(flash());
 
 if (env.NODE_ENV !== "production") {
   app.use(
