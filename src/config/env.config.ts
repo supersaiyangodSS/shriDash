@@ -9,6 +9,7 @@ const envSchema = z.object({
   SERVER_EMAIL: z.string(),
   SERVER_EMAIL_SECRET: z.string(),
   TEMPLE_ID: z.string(),
+  BASE_API_URL: z.string(),
 });
 
 export const env = envSchema.parse(process.env);
