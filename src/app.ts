@@ -2,7 +2,7 @@ import express, { NextFunction, Request, Response, urlencoded } from "express";
 import { errorHandler } from "@/middleware";
 import dns from "node:dns";
 import apiRouter from "@/router/router";
-import viewRouter from "@/modules/web/web.routes";
+import webRouter from "@/modules/web/web.routes";
 import { apiLimiter, env, globalLimiter, getSwaggerSpec } from "@/config";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
@@ -57,7 +57,7 @@ if (env.NODE_ENV !== "production") {
 }
 
 app.use("/api", apiLimiter, apiRouter);
-app.use("/", globalLimiter, viewRouter);
+app.use("/", globalLimiter, webRouter);
 app.use(errorHandler);
 
 export default app;
