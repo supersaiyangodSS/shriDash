@@ -2,6 +2,7 @@ import { HTTP_CODES } from "@/constants";
 import { Request, Response } from "express";
 import axios from "axios";
 import { env } from "@/config";
+import { loginSchema } from "../auth";
 
 const apiUrl = env.BASE_API_URL;
 
@@ -39,7 +40,19 @@ export const loginPage = (req: Request, res: Response) => {
 };
 
 export const loginPost = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  const result = loginSchema.safeParse(req.body);
+
+  if (!result.success) {
+    const errors = result.error.flatten().fieldErrors;
+
+    req.flash("error", JSON.stringify({ errors }));
+    req.flash("old", JSON.stringify({ email: req.body.email || "" }));
+
+    return res.redirect("/login");
+  }
+
+  const { email, password } = result.data;
+
   try {
     const apiRes = await axios.post(
       `${apiUrl}/auth/login`,
@@ -79,7 +92,7 @@ export const loginPost = async (req: Request, res: Response) => {
 export const logoutPost = async (req: Request, res: Response) => {
   try {
     const apiRes = await axios.post(
-      `${apiUrl}/api/auth/logout`,
+      `${apiUrl}/auth/logout`,
       {},
       {
         headers: {
