@@ -116,18 +116,18 @@ NODE_ENV=development
 SERVER_EMAIL=your_email@gmail.com
 SERVER_EMAIL_SECRET=your_email_app_password
 TEMPLE_ID=your_existing_temple_object_id
+BASE_API_URL=your_base_api_link
 ```
 
 ### Variable Descriptions
 
 * `PORT` — Application port (default: 4000)
 * `MONGO_URI` — MongoDB connection string
-* `NO_DB` — Present but not currently used in startup flow
 * `JWT_SECRET` — Secret used for signing authentication tokens
 * `NODE_ENV` — Controls production-specific behavior
 * `SERVER_EMAIL` / `SERVER_EMAIL_SECRET` — Used for email services
 * `TEMPLE_ID` — Required when creating sevekari records
-
+* `BASE_API_URL` — url of `THIS` api (include `/api` prefix if applicable)
 ---
 
 ## Running the Application
