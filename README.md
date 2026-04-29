@@ -127,7 +127,7 @@ BASE_API_URL=your_base_api_link
 * `NODE_ENV` — Controls production-specific behavior
 * `SERVER_EMAIL` / `SERVER_EMAIL_SECRET` — Used for email services
 * `TEMPLE_ID` — Required when creating sevekari records
-* `BASE_API_URL` — url of `THIS` api (include `/api` prefix if applicable)
+* `BASE_API_URL` — base url of this api (include `/api` prefix if applicable)
 ---
 
 ## Running the Application
