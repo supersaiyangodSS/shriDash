@@ -19,9 +19,6 @@ loginBtnSubmit.addEventListener("click", (e) => {
   const email = loginEmail.value.trim();
   const password = loginPassword.value.trim();
 
-  console.log("email", email);
-  console.log("password", password);
-
   if (!email) {
     e.preventDefault();
     notyf.error("Email is required");
@@ -32,7 +29,7 @@ loginBtnSubmit.addEventListener("click", (e) => {
 
   if (!emailRegex.test(email)) {
     e.preventDefault();
-    notyf.eror("Invalid email");
+    notyf.error("Invalid email");
     return;
   }
 
