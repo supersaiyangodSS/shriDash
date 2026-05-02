@@ -1,7 +1,7 @@
 <div class="w-full flex justify-center items-center h-dvh shadow-xl bg-gray-100">
     <div class="relative flex flex-col rounded-xl bg-white p-5">
         <h4 class="block text-xl font-medium text-slate-800">Login</h4>
-        <form class="mt-8 mb-2 w-80 max-w-5xl sm:w-96" action="/login" method="post">
+        <form id="loginForm" class="mt-8 mb-2 w-80 max-w-5xl sm:w-96" action="/login" method="post">
             <div class="mb-1 flex flex-col gap-6">
                 <div class="w-full max-w-sm min-w-50">
                     <label class="block mb-2 text-sm text-slate-600"> Email </label>
@@ -14,9 +14,14 @@
                     <label class="block mb-2 text-sm text-slate-600">
                         Password
                     </label>
-                    <input type="password" name="password"
-                        class="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-300 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
-                        placeholder="Your Password" id="loginFieldPassword" />
+                    <div class="relative">
+
+                        <input type="password" name="password"
+                            class="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-300 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
+                            placeholder="Your Password" id="loginFieldPassword" />
+                        <button id="showPasswordBtn"
+                            class="text-sm absolute font-mono right-2 top-1.5 text-slate-600 cursor-pointer bg-slate-100 px-2 py-0.5 rounded-md">show</button>
+                    </div>
                 </div>
             </div>
 
