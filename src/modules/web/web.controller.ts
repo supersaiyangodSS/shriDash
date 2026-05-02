@@ -3,6 +3,8 @@ import { Request, Response } from "express";
 import axios from "axios";
 import { env } from "@/config";
 import { loginSchema } from "../auth";
+import { CreateUserSchema } from "../users";
+import { safeParse } from "@/utils/helper";
 
 const apiUrl = env.BASE_API_URL;
 
@@ -14,27 +16,22 @@ export const loginPage = (req: Request, res: Response) => {
   const flashError = req.flash("error")[0];
   const flashOld = req.flash("old")[0];
 
-  let parsed = null;
+  let errors: any = null;
+  let old = {};
   try {
-    parsed = flashError ? JSON.parse(flashError) : null;
-  } catch (error) {
-    parsed = null;
+    errors = flashError ? JSON.parse(flashError).errors : null;
+  } catch {
+    errors = null;
   }
 
-  let errorMessage: string | null = null;
-
-  if (parsed) {
-    if (parsed.errors?.password) {
-      errorMessage = parsed.errors.password;
-    } else {
-      errorMessage = "Invalid credentials";
-    }
+  try {
+    old = flashOld ? JSON.parse(flashOld) : {};
+  } catch {
+    old = {};
   }
-
-  const old = flashOld ? JSON.parse(flashOld) : {};
 
   res.render("pages/login", {
-    errorMessage,
+    errors,
     old,
   });
 };
@@ -45,7 +42,15 @@ export const loginPost = async (req: Request, res: Response) => {
   if (!result.success) {
     const errors = result.error.flatten().fieldErrors;
 
-    req.flash("error", JSON.stringify({ errors }));
+    req.flash(
+      "error",
+      JSON.stringify({
+        errors: {
+          email: errors.email,
+          password: errors.password,
+        },
+      }),
+    );
     req.flash("old", JSON.stringify({ email: req.body.email || "" }));
 
     return res.redirect("/login");
@@ -75,7 +80,7 @@ export const loginPost = async (req: Request, res: Response) => {
     req.flash(
       "error",
       JSON.stringify({
-        errors: apiRes.data.errors || null,
+        errors: apiRes.data.message || "Invalid credentials",
       }),
     );
 
