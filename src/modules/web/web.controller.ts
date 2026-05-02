@@ -117,3 +117,81 @@ export const logoutPost = async (req: Request, res: Response) => {
     return res.status(HTTP_CODES.INTERNAL_SERVER_ERROR).end();
   }
 };
+
+export const signUpPage = (req: Request, res: Response) => {
+  const flashError = req.flash("error")[0];
+  const flashOld = req.flash("old")[0];
+
+  const parsedErrors = safeParse<{ errors: any } | null>(flashError, null);
+  const parsedOld = safeParse(flashOld, null);
+
+  const errors = parsedErrors?.errors || null;
+
+  res.render("pages/signup", {
+    errors,
+    old: parsedOld,
+  });
+};
+
+export const signUpPost = async (req: Request, res: Response) => {
+  const { confirmPassword, ...payload } = req.body;
+  const parsed = CreateUserSchema.safeParse(payload);
+
+  if (!parsed.success) {
+    const errors = parsed.error.flatten().fieldErrors;
+    req.flash(
+      "error",
+      JSON.stringify({
+        errors: {
+          firstName: errors.firstName,
+          lastName: errors.lastName,
+          username: errors.username,
+          email: errors.email,
+          password: errors.password,
+        },
+      }),
+    );
+
+    req.flash(
+      "old",
+      JSON.stringify({
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        username: req.body.username,
+        email: req.body.email,
+      }),
+    );
+    return res.redirect("/signup");
+  }
+
+  const { firstName, lastName, username, email, password } = parsed.data;
+
+  try {
+    const apiRes = await axios.post(
+      `${apiUrl}/user`,
+      { firstName, lastName, username, email, password },
+      {
+        withCredentials: true,
+        validateStatus: () => true,
+      },
+    );
+
+    if (apiRes.status === 200 || apiRes.status === 201) {
+      return res.redirect("/login");
+    }
+
+    req.flash(
+      "error",
+      JSON.stringify({
+        errors: apiRes.data?.message || "Signup failed",
+      }),
+    );
+
+    req.flash("old", JSON.stringify({ firstName, lastName, username, email }));
+    return res.redirect("/signup");
+  } catch (err) {
+    return res.status(HTTP_CODES.INTERNAL_SERVER_ERROR).render("pages/signup", {
+      error: "Something went wrong",
+    });
+  }
+};
