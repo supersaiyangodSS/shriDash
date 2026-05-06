@@ -5,11 +5,15 @@ import { env } from "@/config";
 import { loginSchema } from "../auth";
 import { CreateUserSchema } from "../users";
 import { safeParse } from "@/utils/helper";
+import { renderHTMX } from "@/utils/renderPage";
 
 const apiUrl = env.BASE_API_URL;
 
 export const homePage = (req: Request, res: Response) => {
-  res.render("home");
+  res.render("home", {
+    title: "Dashboard",
+    layout: "dashboard",
+  });
 };
 
 export const loginPage = (req: Request, res: Response) => {
@@ -31,6 +35,7 @@ export const loginPage = (req: Request, res: Response) => {
   }
 
   res.render("pages/login", {
+    layout: "main",
     errors,
     old,
   });
@@ -88,6 +93,7 @@ export const loginPost = async (req: Request, res: Response) => {
     return res.redirect("/login");
   } catch (error) {
     return res.status(HTTP_CODES.INTERNAL_SERVER_ERROR).render("pages/login", {
+      layout: "main",
       error: "Something went wrong",
       old: { email },
     });
@@ -128,6 +134,7 @@ export const signUpPage = (req: Request, res: Response) => {
   const errors = parsedErrors?.errors || null;
 
   res.render("pages/signup", {
+    layout: "main",
     errors,
     old: parsedOld,
   });
@@ -191,6 +198,29 @@ export const signUpPost = async (req: Request, res: Response) => {
     return res.redirect("/signup");
   } catch (err) {
     return res.status(HTTP_CODES.INTERNAL_SERVER_ERROR).render("pages/signup", {
+      layout: "main",
+      error: "Something went wrong",
+    });
+  }
+};
+
+export const profilePage = (req: Request, res: Response) => {
+  try {
+    renderHTMX(req, res, "pages/sections/profile", { heading: "profile" });
+  } catch (error) {
+    return res.status(HTTP_CODES.INTERNAL_SERVER_ERROR).render("pages/signup", {
+      layout: "main",
+      error: "Something went wrong",
+    });
+  }
+};
+
+export const settingsPage = (req: Request, res: Response) => {
+  try {
+    renderHTMX(req, res, "pages/sections/settings", { heading: "settings" });
+  } catch (error) {
+    return res.status(HTTP_CODES.INTERNAL_SERVER_ERROR).render("pages/signup", {
+      layout: "main",
       error: "Something went wrong",
     });
   }

@@ -6,6 +6,8 @@ import {
   logoutPost,
   signUpPage,
   signUpPost,
+  settingsPage,
+  profilePage,
 } from "./web.controller";
 import { allowRoles, WebAuthMiddleware } from "@/middleware";
 import { redirectIfAuth } from "@/middleware/redirectIfAuth.middleware";
@@ -30,6 +32,20 @@ router.post(
   WebAuthMiddleware,
   allowRoles(ROLES.ADMIN, ROLES.SUPERADMIN),
   signUpPost,
+);
+
+router.get(
+  "/profile",
+  WebAuthMiddleware,
+  allowRoles(ROLES.ADMIN, ROLES.SUPERADMIN, ROLES.USER),
+  profilePage,
+);
+
+router.get(
+  "/settings",
+  WebAuthMiddleware,
+  allowRoles(ROLES.ADMIN, ROLES.SUPERADMIN),
+  settingsPage,
 );
 
 export default router;
