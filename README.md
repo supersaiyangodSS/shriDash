@@ -1,4 +1,4 @@
-# Shrihari API
+# Temple Ops API
 
 Production-grade REST API designed for temple operations, user management, sevekari records, authentication, and audit logging.
 
