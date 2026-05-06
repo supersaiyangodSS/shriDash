@@ -12,16 +12,19 @@
     <title>{{title}}</title>
 </head>
 
-<body class="w-full flex">
-    <div class="w-full h-dvh flex">
-        {{> sidebar}}
-    </div>
+<body class="h-dvh overflow-hidden">
+    <div class="flex h-full">
 
-    <div class="content w-full bg-slate-200">
-        <div class="container w-4/5 mx-auto min-h-dvh max-h-full bg-transparent" id="main-content">
-            {{{body}}}
-        </div>
-    </div>
+        <aside class="w-64 shrink-0 h-full">
+            {{> sidebar}}
+        </aside>
+
+        <main class="flex-1 overflow-y-auto bg-slate-200">
+            <div id="main-content" class="container w-4/5 mx-auto min-h-full">
+                {{{body}}}
+            </div>
+        </main>
+
     </div>
 </body>
 
