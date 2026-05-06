@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="./js/htmx.min.js" integrity="sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="./css/notyf.min.css">
+    <link rel="stylesheet" href="/css/output.css" />
+    <img src="">
+    <title>{{title}}</title>
+</head>
+
+<body class="w-full flex">
+    <div class="w-full h-dvh flex">
+        {{> sidebar}}
+    </div>
+
+    <div class="content w-full bg-slate-200">
+        <div class="container w-4/5 mx-auto min-h-dvh max-h-full bg-transparent" id="main-content">
+            {{{body}}}
+        </div>
+    </div>
+    </div>
+</body>
+
+</html>
