@@ -149,3 +149,19 @@ if (showSignupPasswordBtn) {
     }
   });
 }
+
+const logOutModal = document.querySelector("#logoutModal");
+const logOutModalBtn = document.querySelector("#logoutModalBtn");
+const logOutModalClose = document.querySelector("#logoutModalClose");
+
+if (logOutModalBtn) {
+  logOutModalBtn.addEventListener("click", () => {
+    logOutModal.classList.remove("hidden");
+    logOutModal.classList.add("flex");
+  });
+
+  logOutModalClose.addEventListener("click", () => {
+    logOutModal.classList.remove("flex");
+    logOutModal.classList.add("hidden");
+  });
+}

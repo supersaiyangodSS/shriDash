@@ -8,12 +8,12 @@
         crossorigin="anonymous"></script>
     <link rel="stylesheet" href="./css/notyf.min.css">
     <link rel="stylesheet" href="/css/output.css" />
-    <img src="">
     <title>{{title}}</title>
 </head>
 
 <body class="h-dvh overflow-hidden">
     <div class="flex h-full">
+        {{> logoutModal}}
 
         <aside class="w-64 shrink-0 h-full">
             {{> sidebar}}
@@ -27,5 +27,7 @@
 
     </div>
 </body>
+<script src="./js/notyf.min.js"></script>
+<script src="./js/main.js"></script>
 
 </html>
