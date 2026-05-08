@@ -7,6 +7,16 @@ import { CreateUserSchema } from "../users";
 import { safeParse } from "@/utils/helper";
 import { renderHTMX } from "@/utils/renderPage";
 
+type ProfileViewModel = {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  username: string;
+  role: string;
+  varified: boolean;
+};
+
 const apiUrl = env.BASE_API_URL;
 
 export const homePage = (req: Request, res: Response) => {
@@ -204,9 +214,21 @@ export const signUpPost = async (req: Request, res: Response) => {
   }
 };
 
-export const profilePage = (req: Request, res: Response) => {
+export const profilePage = async (req: Request, res: Response) => {
   try {
-    renderHTMX(req, res, "pages/sections/profile", { heading: "profile" });
+    const apiRes = await axios.get(`${apiUrl}/user/me`, {
+      headers: {
+        cookie: req.headers.cookie || "",
+      },
+      withCredentials: true,
+      validateStatus: () => true,
+    });
+    const vm: ProfileViewModel = apiRes.data.data;
+    renderHTMX(req, res, "pages/sections/profile", {
+      vm,
+      heading: "profile",
+      title: "Profile",
+    });
   } catch (error) {
     return res.status(HTTP_CODES.INTERNAL_SERVER_ERROR).render("pages/signup", {
       layout: "main",
@@ -217,7 +239,10 @@ export const profilePage = (req: Request, res: Response) => {
 
 export const settingsPage = (req: Request, res: Response) => {
   try {
-    renderHTMX(req, res, "pages/sections/settings", { heading: "settings" });
+    renderHTMX(req, res, "pages/sections/settings", {
+      heading: "settings",
+      title: "Settings",
+    });
   } catch (error) {
     return res.status(HTTP_CODES.INTERNAL_SERVER_ERROR).render("pages/signup", {
       layout: "main",

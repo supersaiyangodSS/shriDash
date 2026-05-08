@@ -1,0 +1,36 @@
+<title>{{title}}</title>
+<p class="text-3xl my-5 font-semibold capitalize">Profile</p>
+<div class="flex items-center">
+
+    <p
+        class="mt-10 mb-3 mr-5 bg-gray-400 capitalize flex justify-center items-center w-18 h-18 text-center text-4xl rounded-full border-2 border-white text-white">
+        {{vm.firstName.[0]}}
+    </p>
+    <div class="mt-5">
+        <p class="text-4xl capitalize">{{vm.firstName}} {{vm.lastName}}</p>
+        <p class="text-slate-600">@{{vm.username}}</p>
+    </div>
+</div>
+
+<div class="flex flex-col" id="profileSection">
+    <div class="flex flex-col gap-4 my-5">
+        <div>
+            <p class="text-slate-600">User id:</p>
+            <p class="mb-1 font-mono">{{vm._id}}</p>
+        </div>
+        <div>
+            <p class="text-slate-600">Email:</p>
+            <p>{{vm.email}}</p>
+        </div>
+        <div>
+            <p class="text-slate-600">Status:</p>
+            {{#if vm.verified}} <p class="text-green-500 font-semibold">Verified</p> {{else}} <p
+                class="text-red-500 font-semibold">Not Verified</p> {{/if}}
+        </div>
+        <div>
+            <p class="text-slate-600">Role:</p>
+            <p>{{vm.role}}</p>
+        </div>
+    </div>
+
+</div>
