@@ -1,6 +1,6 @@
 # Temple Ops API
 
-Production-grade REST API designed for temple operations, user management, sevekari records, authentication, and audit logging.
+Production-grade temple operations backend with a REST API and a server-rendered web dashboard for user management, sevekari records, authentication, profile views, and audit logging.
 
 ---
 
@@ -14,12 +14,13 @@ Production-grade REST API designed for temple operations, user management, sevek
 6. Installation
 7. Environment Variables
 8. Running the Application
-9. API Documentation
-10. Authentication & Authorization
-11. API Endpoints
-12. Scripts
-13. Testing
-14. Notes
+9. Web Dashboard
+10. API Documentation
+11. Authentication & Authorization
+12. API Endpoints
+13. Scripts
+14. Testing
+15. Notes
 
 ---
 
@@ -33,8 +34,12 @@ This project is a scalable **Express + TypeScript backend** with:
 * MongoDB integration via Mongoose
 * Audit logging for critical actions
 * Swagger documentation (non-production environments only)
+* Server-rendered Handlebars pages for login, signup, dashboard
+* HTMX-powered dashboard section rendering through a web BFF layer
 
 **Base API Prefix:** `/api`
+
+**Web App Entry:** `/`
 
 ---
 
@@ -47,6 +52,10 @@ This project is a scalable **Express + TypeScript backend** with:
 * Zod
 * JWT
 * Nodemailer
+* Express Handlebars
+* HTMX
+* Tailwind CSS
+* Axios
 * Jest
 * Swagger (`swagger-jsdoc`, `swagger-ui-express`)
 * Pino Logger
@@ -55,12 +64,15 @@ This project is a scalable **Express + TypeScript backend** with:
 
 ## Features
 
-* Modular, domain-driven architecture (`auth`, `users`, `sevekari`, `temple`, `audit`)
+* Modular, domain-driven architecture
 * Soft delete, restore, and permanent delete flows
 * Email verification for onboarding
 * Pagination support (users, audit logs)
 * Security middlewares
 * Centralized error handling using custom `AppError`
+* Web login and logout flows backed by the API
+* Admin/superadmin signup page for creating users
+* Custom Dashboard
 
 ---
 
@@ -76,6 +88,7 @@ src/
   middleware/
   modules/
     auth/
+    web/
     users/
       audit/
     sevekari/
@@ -83,6 +96,10 @@ src/
     audit/
   router/
   utils/
+  views/
+    layouts/
+    pages/
+    partials/
 ```
 
 ---
@@ -99,7 +116,7 @@ src/
 ```bash
 git clone <repo-url>
 cd shrihari
-npm install
+pnpm install
 ```
 
 ---
@@ -121,13 +138,14 @@ BASE_API_URL=your_base_api_link
 
 ### Variable Descriptions
 
-* `PORT` — Application port (default: 4000)
-* `MONGO_URI` — MongoDB connection string
-* `JWT_SECRET` — Secret used for signing authentication tokens
-* `NODE_ENV` — Controls production-specific behavior
-* `SERVER_EMAIL` / `SERVER_EMAIL_SECRET` — Used for email services
-* `TEMPLE_ID` — Required when creating sevekari records
-* `BASE_API_URL` — base url of this API (include `/api` prefix if applicable)
+* `PORT` - Application port (default: 4000)
+* `MONGO_URI` - MongoDB connection string
+* `JWT_SECRET` - Secret used for signing authentication tokens
+* `NODE_ENV` - Controls production-specific behavior
+* `SERVER_EMAIL` / `SERVER_EMAIL_SECRET` - Used for email services
+* `TEMPLE_ID` - Required when creating sevekari records
+* `BASE_API_URL` - Base URL of this API, including the `/api` prefix for the web BFF calls
+
 ---
 
 ## Running the Application
@@ -135,21 +153,46 @@ BASE_API_URL=your_base_api_link
 ### Development (watch mode)
 
 ```
-npm run dev:nodemon
+pnpm dev
+```
+
+### Tailwind CSS (watch mode)
+
+```
+pnpm css
 ```
 
 ### Production
 
 ```
-npm run main
+pnpm build
+pnpm main
 ```
+
+---
+
+## Web Dashboard
+
+The app includes server-rendered web pages mounted at `/`.
+
+| Method | Endpoint    | Access                  | Description                          |
+| ------ | ----------- | ----------------------- | ------------------------------------ |
+| GET    | `/`         | Authenticated           | Dashboard shell                      |
+| GET    | `/login`    | Public                  | Login page                           |
+| POST   | `/login`    | Public                  | Login form submission via API BFF    |
+| POST   | `/logout`   | Authenticated           | Logout through API and HTMX redirect |
+| GET    | `/signup`   | admin, superadmin       | User signup page                     |
+| POST   | `/signup`   | admin, superadmin       | User creation via API BFF            |
+| GET    | `/profile`  | user, admin, superadmin | Current user profile dashboard view  |
+| GET    | `/settings` | admin, superadmin       | Settings dashboard view              |
+
+Dashboard sections use `renderHTMX` so normal requests render inside the `dashboard` layout, while HTMX requests return only the requested section partial.
 
 ---
 
 ## API Documentation
 
 Interactive API documentation is available via Swagger UI. Swagger UI is enabled only in non-production environments:
-
 
 ```
 NODE_ENV !== "production"
@@ -207,9 +250,10 @@ All endpoints are prefixed with `/api`.
 | ------ | --------------------------- | ----------------------- |
 | POST   | `/user`                     | Public                  |
 | GET    | `/user?page=1&limit=10`     | admin, superadmin       |
+| GET    | `/user/me`                  | user, admin, superadmin |
 | DELETE | `/user/:id`                 | admin, superadmin       |
 | DELETE | `/user/:id/force`           | superadmin              |
-| PATCH  | `/user/:id/restore`         | superadmin              |
+| PATCH  | `/user/:id/restore`         | admin, superadmin       |
 | PATCH  | `/user/:id`                 | user, admin, superadmin |
 | PATCH  | `/user/:id/reset-password`  | user, admin, superadmin |
 | PATCH  | `/user/:id/email`           | user, admin, superadmin |
@@ -249,14 +293,15 @@ All endpoints are prefixed with `/api`.
 
 ## Scripts
 
-| Script                 | Description                            |
-| ---------------------- | -------------------------------------- |
-| `pnpm dev`             | Run app using nodemon                  |
-| `pnpm build`           | Transpile the ts files to js inside    |
-| `pnpm main`            | Run compiled app from `dist/server.js` |
-| `pnpm test`            | Run Jest tests                         |
-| `pnpm format`          | Format code using Prettier             |
-| `pnpm format:check`    | Check formatting                       |
+| Script              | Description                            |
+| ------------------- | -------------------------------------- |
+| `pnpm dev`          | Run app using nodemon                  |
+| `pnpm build`        | Transpile TypeScript into `dist`       |
+| `pnpm main`         | Run compiled app from `dist/server.js` |
+| `pnpm css`          | Watch and compile Tailwind CSS         |
+| `pnpm test`         | Run Jest tests                         |
+| `pnpm format`       | Format code using Prettier             |
+| `pnpm format:check` | Check formatting                       |
 
 ---
 
