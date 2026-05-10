@@ -1,36 +1,49 @@
 <title>{{title}}</title>
-<p class="text-3xl my-5 font-semibold capitalize">Profile</p>
-<div class="flex items-center">
+<p class="text-3xl mt-5 font-semibold capitalize">Profile</p>
+<p class="text-gray-600 mb-5">Manage your account information and settings</p>
+<div class="flex flex-col items-center gap-5">
 
-    <p
-        class="mt-10 mb-3 mr-5 bg-gray-400 capitalize flex justify-center items-center w-18 h-18 text-center text-4xl rounded-full border-2 border-white text-white">
-        {{vm.firstName.[0]}}
-    </p>
-    <div class="mt-5">
-        <p class="text-4xl capitalize">{{vm.firstName}} {{vm.lastName}}</p>
-        <p class="text-slate-600">@{{vm.username}}</p>
+    <div class="w-full bg-white p-5 rounded-xl">
+        <div class="upper-card p-5">
+            <div class="wrapper flex">
+                <div
+                    class="letter-box w-25 h-25 text-4xl flex justify-center items-center text-white rounded-full bg-orange-600 capitalize mr-6 font-semibold">
+                    {{vm.firstName.[0]}}
+                </div>
+                <div class="info-box">
+                    <p class="full-name text-3xl capitalize font-semibold">{{vm.firstName}} {{vm.lastName}}</p>
+                    <p class="username text-slate-500 font-semibold">@{{vm.username}}</p>
+                    <div class="status block w-fit mt-2">
+                        {{#if vm.varified}}
+                        <p
+                            class="varified px-3 py-0.5 bg-green-200 rounded-2xl text-green-700 text-sm text-center font-semibold">
+                            Verified
+                        </p>
+                        {{else}}
+                        <p
+                            class="unvarified px-3 py-0.5 bg-red-200 rounded-2xl text-red-700 text-sm text-center font-semibold">
+                            Not Verified
+                        </p>
+                        {{/if}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="devider w-full h-0.5 bg-slate-100"></div>
+        <div class="lower-card p-5">
+            <div class="wrapper flex justify-between">
+                <div class="email-container">
+                    <p class="email-heading uppercase text-gray-500 font-semibold">Email address</p>
+                    <p class="email font-semibold">{{vm.email}}</p>
+                </div>
+                <div class="uid-container">
+                    <p class="uid-heading uppercase text-gray-500 font-semibold">User id</p>
+                    <p class="uid bg-gray-100 p-2">{{vm._id}}</p>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 
-<div class="flex flex-col" id="profileSection">
-    <div class="flex flex-col gap-4 my-5">
-        <div>
-            <p class="text-slate-600">User id:</p>
-            <p class="mb-1 font-mono">{{vm._id}}</p>
-        </div>
-        <div>
-            <p class="text-slate-600">Email:</p>
-            <p>{{vm.email}}</p>
-        </div>
-        <div>
-            <p class="text-slate-600">Status:</p>
-            {{#if vm.verified}} <p class="text-green-500 font-semibold">Verified</p> {{else}} <p
-                class="text-red-500 font-semibold">Not Verified</p> {{/if}}
-        </div>
-        <div>
-            <p class="text-slate-600">Role:</p>
-            <p>{{vm.role}}</p>
-        </div>
-    </div>
+
 
 </div>
