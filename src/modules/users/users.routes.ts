@@ -127,7 +127,7 @@ router.delete(
   validate(UserIdSchema, "params"),
   authMiddleware,
   auditMiddleware("DELETE", "USER"),
-  allowRoles(ROLES.SUPERADMIN, ROLES.ADMIN),
+  allowRoles(ROLES.SUPERADMIN, ROLES.ADMIN, ROLES.USER),
   controller.softDeleteUserController,
 );
 /**
