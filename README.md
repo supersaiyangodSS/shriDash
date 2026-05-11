@@ -251,7 +251,7 @@ All endpoints are prefixed with `/api`.
 | POST   | `/user`                     | Public                  |
 | GET    | `/user?page=1&limit=10`     | admin, superadmin       |
 | GET    | `/user/me`                  | user, admin, superadmin |
-| DELETE | `/user/:id`                 | admin, superadmin       |
+| DELETE | `/user/:id`                 | user, admin, superadmin |
 | DELETE | `/user/:id/force`           | superadmin              |
 | PATCH  | `/user/:id/restore`         | admin, superadmin       |
 | PATCH  | `/user/:id`                 | user, admin, superadmin |
