@@ -165,3 +165,18 @@ if (logOutModalBtn) {
     logOutModal.classList.add("hidden");
   });
 }
+
+const deleteInput = document.querySelector("#deleteConfirmInputEmail");
+const deleteButton = document.querySelector("#deleteAccountBtn");
+
+const correctEmail = deleteInput.dataset.email;
+
+deleteInput.addEventListener("input", () => {
+  const isValid = deleteInput.value.trim() === correctEmail;
+
+  deleteButton.disabled = !isValid;
+
+  deleteButton.classList.toggle("opacity-50", !isValid);
+
+  deleteButton.classList.toggle("cursor-not-allowed", !isValid);
+});

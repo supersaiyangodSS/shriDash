@@ -230,7 +230,41 @@ export const profilePage = async (req: Request, res: Response) => {
       title: "Profile",
     });
   } catch (error) {
-    return res.status(HTTP_CODES.INTERNAL_SERVER_ERROR).render("pages/signup", {
+    return res.status(HTTP_CODES.INTERNAL_SERVER_ERROR).render("pages/login", {
+      layout: "main",
+      error: "Something went wrong",
+    });
+  }
+};
+
+export const deleteUser = async (req: Request, res: Response) => {
+  try {
+    const apiRes = await axios.get(`${apiUrl}/user/me`, {
+      headers: {
+        cookie: req.headers.cookie || "",
+      },
+      withCredentials: true,
+      validateStatus: () => true,
+    });
+    const id = apiRes.data.data._id;
+    if (!id) {
+      res.setHeader("HX-Redirect", "/");
+      res.end();
+    }
+    if (id) {
+      await axios.delete(`${apiUrl}/user/${id}`, {
+        headers: {
+          cookie: req.headers.cookie || "",
+        },
+        withCredentials: true,
+        validateStatus: () => true,
+      });
+      res.clearCookie("token");
+    }
+    res.setHeader("HX-Redirect", "/login");
+    return res.end();
+  } catch (error) {
+    return res.status(HTTP_CODES.INTERNAL_SERVER_ERROR).render("pages/login", {
       layout: "main",
       error: "Something went wrong",
     });
@@ -244,7 +278,7 @@ export const settingsPage = (req: Request, res: Response) => {
       title: "Settings",
     });
   } catch (error) {
-    return res.status(HTTP_CODES.INTERNAL_SERVER_ERROR).render("pages/signup", {
+    return res.status(HTTP_CODES.INTERNAL_SERVER_ERROR).render("pages/login", {
       layout: "main",
       error: "Something went wrong",
     });
