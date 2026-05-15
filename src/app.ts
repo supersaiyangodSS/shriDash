@@ -14,6 +14,7 @@ import { engine } from "express-handlebars";
 import path from "node:path";
 import session from "express-session";
 import flash from "connect-flash";
+import { notFound } from "./middleware/notFound.middleware";
 
 dns.setServers(["8.8.8.8", "8.8.4.4"]);
 
@@ -59,5 +60,6 @@ if (env.NODE_ENV !== "production") {
 app.use("/api", apiLimiter, apiRouter);
 app.use("/", globalLimiter, webRouter);
 app.use(errorHandler);
+app.use(globalLimiter, notFound);
 
 export default app;
