@@ -3,7 +3,14 @@ import { errorHandler } from "@/middleware";
 import dns from "node:dns";
 import apiRouter from "@/router/router";
 import webRouter from "@/modules/web/web.routes";
-import { apiLimiter, env, globalLimiter, getSwaggerSpec } from "@/config";
+import authRouter from "@/modules/auth/auth.routes";
+import {
+  apiLimiter,
+  env,
+  globalLimiter,
+  getSwaggerSpec,
+  authLimiter,
+} from "@/config";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import cors from "cors";
@@ -57,9 +64,10 @@ if (env.NODE_ENV !== "production") {
   );
 }
 
+app.use("/api/auth", authLimiter, authRouter);
 app.use("/api", apiLimiter, apiRouter);
 app.use("/", globalLimiter, webRouter);
+app.use(notFound);
 app.use(errorHandler);
-app.use(globalLimiter, notFound);
 
 export default app;
