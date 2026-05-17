@@ -271,11 +271,20 @@ export const deleteUser = async (req: Request, res: Response) => {
   }
 };
 
-export const settingsPage = (req: Request, res: Response) => {
+export const settingsPage = async (req: Request, res: Response) => {
   try {
+    const apiRes = await axios.get(`${apiUrl}/temple`, {
+      headers: {
+        cookie: req.headers.cookie || "",
+      },
+      withCredentials: true,
+      validateStatus: () => true,
+    });
+    const { users } = apiRes.data.data;
     renderHTMX(req, res, "pages/sections/settings", {
       heading: "settings",
       title: "Settings",
+      temple: users,
     });
   } catch (error) {
     return res.status(HTTP_CODES.INTERNAL_SERVER_ERROR).render("pages/login", {

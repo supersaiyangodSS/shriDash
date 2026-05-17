@@ -1,0 +1,31 @@
+<title>{{title}}</title>
+<p class="text-3xl mt-5 font-semibold capitalize">Settings</p>
+<p class="text-gray-600 mb-5">Manage app settings</p>
+<div class="text-2xl font-semibold">Temple</div>
+<p class="text-gray-600 mb-3">You can only have one active temple</p>
+<div class="flex flex-col items-center gap-5">
+
+
+    <div id="temple-cards" class="flex flex-wrap gap-2 w-full">
+
+        {{#if temple}}
+
+        {{#each temple}}
+        <div id="content" class="bg-white capitalize w-full p-5 rounded-xl">
+            <p class="text-2xl font-semibold">{{this.name}}</p>
+            <div class="flex gap-2 text-sm mt-2">
+                <p class="flex gap-1"><span class="material-symbols-outlined">location_on</span>{{this.city}},
+                    {{this.district}},
+                    {{this.state}}
+                </p>
+                {{#if this.branch}}
+                <p class=" mx-2">Branch: {{this.branch}}</p>
+                {{/if}}
+            </div>
+        </div>
+        {{/each}}
+    </div>
+    {{else}}
+    <p>No temples found</p>
+    {{/if}}
+</div>
