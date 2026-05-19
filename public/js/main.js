@@ -15,7 +15,6 @@ document.addEventListener("DOMContentLoaded", () => {
 const loginEmail = document.querySelector("#loginFieldEmail");
 const loginPassword = document.querySelector("#loginFieldPassword");
 const loginBtnSubmit = document.querySelector("#loginBtnSubmit");
-
 const loginForm = document.querySelector("#loginForm");
 
 if (loginForm) {
@@ -156,6 +155,7 @@ const logOutModalClose = document.querySelector("#logoutModalClose");
 
 if (logOutModalBtn) {
   logOutModalBtn.addEventListener("click", () => {
+    localStorage.removeItem("activeSidebarIndex");
     logOutModal.classList.remove("hidden");
     logOutModal.classList.add("flex");
   });
@@ -169,14 +169,34 @@ if (logOutModalBtn) {
 const deleteInput = document.querySelector("#deleteConfirmInputEmail");
 const deleteButton = document.querySelector("#deleteAccountBtn");
 
-const correctEmail = deleteInput.dataset.email;
+if (deleteInput) {
+  const correctEmail = deleteInput.dataset.email;
+  deleteInput.addEventListener("input", () => {
+    const isValid = deleteInput.value.trim() === correctEmail;
 
-deleteInput.addEventListener("input", () => {
-  const isValid = deleteInput.value.trim() === correctEmail;
+    deleteButton.disabled = !isValid;
 
-  deleteButton.disabled = !isValid;
+    deleteButton.classList.toggle("opacity-50", !isValid);
 
-  deleteButton.classList.toggle("opacity-50", !isValid);
+    deleteButton.classList.toggle("cursor-not-allowed", !isValid);
+  });
+}
 
-  deleteButton.classList.toggle("cursor-not-allowed", !isValid);
+const sidebarItems = document.querySelectorAll(".sidebar-item");
+const savedIndex = localStorage.getItem("activeSidebarIndex");
+
+if (savedIndex !== null) {
+  sidebarItems[savedIndex]?.classList.add("bg-slate-200");
+}
+
+sidebarItems.forEach((item, index) => {
+  item.addEventListener("click", () => {
+    sidebarItems.forEach((el) => {
+      el.classList.remove("bg-slate-200");
+    });
+
+    item.classList.add("bg-slate-200");
+
+    localStorage.setItem("activeSidebarIndex", index);
+  });
 });
